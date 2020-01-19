@@ -1,41 +1,103 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>
-      Tab One
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content class="ion-no-padding">
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12" style="text-align: center;">
+        <h3>Realizar venta</h3>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <form [formGroup]="formData" (ngSubmit)="onSubmit1()">
+    <ion-list style="text-align: center;">
+      <ion-item-divider>
+        <ion-label>
+          Datos del cliente (Opcional)
+        </ion-label>
+      </ion-item-divider>
+      <ion-item>
+        <ion-label position="floating">Nombre</ion-label>
+        <ion-input type="text" formControlName="name" name="name"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Cedula</ion-label>
+        <ion-input type="text" formControlName="dni" name="name"></ion-input>
+      </ion-item>
+      <ion-item-divider>
+        <ion-label>
+          Vendedor actual
+        </ion-label>
+      </ion-item-divider>
+      <ion-item>
+        <ion-label position="floating">Vendedor</ion-label>
+        <ion-input style="pointer-events:none;" type="text" formControlName="seller" name="seller"></ion-input>
+      </ion-item>
+      <ion-item-divider>
+        <ion-label>
+          Servicios a vender
+        </ion-label>
+      </ion-item-divider>
+      <ion-item>
+        <ion-label>Combo o plan</ion-label>
+        <ion-select placeholder="Select One" formControlName="detail" (ionChange)="onChangePlan($event)">
+          <ion-select-option *ngFor="let item of data" value="{{item.id}}">{{item.name}}</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ng-container *ngIf="arraySelectPlan && arraySelectPlan.length > 0">
+        <ion-item-divider>
+          <ion-label>
+            Planes adquiridos
+          </ion-label>
+        </ion-item-divider>
+        <ion-item *ngFor="let item of arraySelectPlan">
+          <ion-label>{{item.name}} - {{item.totalvalue}}</ion-label>
+          <img (click)="removeItemFromArrPlan(item)" src="https://img.icons8.com/plasticine/2x/delete-sign.png"
+            width="20" height="20" style="float: right;">
+        </ion-item>
+      </ng-container>
 
-<ion-content>
-    <ion-card class="welcome-card">
-      <img src="/assets/shapes.svg" alt="" />
-      <ion-card-header>
-        <ion-card-subtitle>Get Started</ion-card-subtitle>
-        <ion-card-title>Welcome to Ionic</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <p>Now that your app has been created, you'll want to start building out features and components. Check out some of the resources below for next steps.</p>
-      </ion-card-content>
-    </ion-card>
-    <ion-list lines="none">
-      <ion-list-header>
-        <ion-label>Resources</ion-label>
-      </ion-list-header>
-      <ion-item href="https://ionicframework.com/docs/">
-        <ion-icon slot="start" color="medium" name="book"></ion-icon>
-        <ion-label>Ionic Documentation</ion-label>
+
+      <ion-item>
+        <ion-label>Servicios individuales</ion-label>
+        <ion-select placeholder="Select One" formControlName="service" (ionChange)="onChange($event)">
+          <ion-select-option *ngFor="let item of services" value="{{item.id}}">{{item.name}}</ion-select-option>
+        </ion-select>
       </ion-item>
-      <ion-item href="https://ionicframework.com/docs/building/scaffolding">
-        <ion-icon slot="start" color="medium" name="build"></ion-icon>
-        <ion-label>Scaffold Out Your App</ion-label>
+      <ng-container *ngIf="arraySelect && arraySelect.length > 0">
+        <ion-item-divider>
+          <ion-label>
+            Servicios adquiridos
+          </ion-label>
+        </ion-item-divider>
+        <ion-item *ngFor="let item of arraySelect">
+          <ion-label>{{item.name}} - {{item.publicvalue}}</ion-label><img (click)="removeItemFromArr(item)"
+            src="https://img.icons8.com/plasticine/2x/delete-sign.png" width="20" height="20" style="float: right;">
+        </ion-item>
+      </ng-container>
+      <ion-item>
+        <ion-label>Zona de venta</ion-label>
+        <ion-select placeholder="Select One" formControlName="zone">
+          <ion-select-option *ngFor="let item of pointsale" value="{{item.name}}">{{item.name}}</ion-select-option>
+        </ion-select>
       </ion-item>
-      <ion-item href="https://ionicframework.com/docs/layout/structure">
-        <ion-icon slot="start" color="medium" name="grid"></ion-icon>
-        <ion-label>Change Your App Layout</ion-label>
+      <ion-item-divider>
+        <ion-label>
+          Escanear codigo de manilla
+        </ion-label>
+      </ion-item-divider>
+      <ion-item>
+        <ion-label>Escanear codigo:</ion-label>
+        <ion-input type="text" formControlName="codebar" name="codebar"></ion-input>
+
+        <ion-button color="warning" (click)="scanCode()">SCAN</ion-button>
+
       </ion-item>
-      <ion-item href="https://ionicframework.com/docs/theming/basics">
-        <ion-icon slot="start" color="medium" name="color-fill"></ion-icon>
-        <ion-label>Theme Your App</ion-label>
+      <p *ngIf="scannedData">{{ scannedData }}</p>
+      <br>
+      <ion-button color="dark" type="submit">Guardar</ion-button>
+      <ion-item>
+        <ion-label>Total: {{totalValue + total}} </ion-label>
+
+
       </ion-item>
     </ion-list>
+  </form>
 </ion-content>

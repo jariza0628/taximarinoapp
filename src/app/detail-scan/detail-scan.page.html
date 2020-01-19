@@ -1,0 +1,75 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Servivios de Manilla</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12">
+        Servicios incluidos en la manilla
+      </ion-col>
+      <ion-col size="6">
+        Fecha: {{datat.date | date:'short' }}
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-card style="width: 100%;">
+        <ion-card-header>
+          <ion-card-subtitle>Servicios individuales asociados a la manilla</ion-card-subtitle>
+          <ion-card-title>Lista de servicios</ion-card-title>
+        </ion-card-header>
+
+        <ion-card-content>
+          <div class="border-left" *ngFor="let item of datat.detail; let i = index">
+            <span><b>Nombre del servicio:</b><br> {{ item.name }}</span><br>
+            <span><b>Descripción del servicio:</b><br> </span><br>
+            <span><b>Valor del servicio individual:</b><br> {{ item.publicvalue }}</span><br><br>
+            <span><b>Estado:</b></span>
+            <ion-button *ngIf="item.status === 'Activo'" color="secondary" slot="end"
+              (click)="updateArrayServiceIndividual(i)">Disponible</ion-button>
+            <ion-button *ngIf="item.status === 'Usado'" color="danger" slot="end">Usado</ion-button>
+
+
+          </div>
+
+
+        </ion-card-content>
+      </ion-card>
+
+    </ion-row>
+    <ion-row>
+      <ion-card style="width: 100%;">
+        <ion-card-header>
+          <ion-card-subtitle>Planes individuales asociados a la manilla</ion-card-subtitle>
+          <ion-card-title>Planes</ion-card-title>
+        </ion-card-header>
+
+        <ion-card-content>
+          <div *ngFor="let item of datat.plans;let i1 = index">
+            <span><b>Nombre del plan:</b><br> {{ item.name }}</span><br>
+            <span><b>Descripción del plan:</b><br> {{ item.description }}</span><br>
+            <span><b>Valor del servicio individual:</b><br> {{ item.totalvalue }}</span><br>
+
+            <div class="border-left" *ngFor="let ser of item.services;let i = index">
+              <h1>Incluye:</h1>
+              <span><b>Nombre del servicio:</b><br> {{ ser.name }}</span><br>
+              <span><b>Descripción del servicio:</b><br> {{ ser.description }}</span><br>
+              <span><b>Estado:</b></span>
+              <ion-button *ngIf="ser.status === 'Activo'" color="secondary" slot="end" (click)="updateArrayPlan(i1, i)">
+                Disponible</ion-button>
+              <ion-button *ngIf="ser.status === 'Usado'" color="danger" slot="end">Usado</ion-button>
+            </div>
+          </div>
+
+        </ion-card-content>
+      </ion-card>
+
+    </ion-row>
+
+  </ion-grid>
+</ion-content>

@@ -1,0 +1,40 @@
+.full {
+  padding-top: 20%;
+  background-image: url("https://taximarino.com/wp-content/uploads/2019/08/menucatamaran.jpg");
+  background-size: cover;
+  background-color: black;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  position: relative;
+  ion-list {
+    background-color: transparent;
+  }
+  ion-item {
+    --background: transparent;
+    color: #fafafa;
+    --placeholder-color: #fafafa;
+    --border-color: var(--ion-color-one, #fafafa);
+    --highlight-color-focused: #0099ff;
+    font-size: 18px;
+  }
+
+  .native-input :focus {
+    background-color: rgba(0, 0, 0, 0.472) !important;
+  }
+  ion-label {
+    color: #fafafa !important;
+    --color-focused: #fafafa;
+    --placeholder-color: #fafafa;
+  }
+  .item-input-has-focus .label-md[floating],
+  .input-has-focus .label-md[floating] {
+    color: #fafafa; //label color when focusing
+  }
+  .end-position {
+    position: absolute;
+    bottom: 15px;
+    left: 0px;
+    width: 98%;
+  }
+}

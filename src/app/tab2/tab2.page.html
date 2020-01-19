@@ -1,9 +1,24 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>
-      Tab Two
+      Historial de ventas
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content></ion-content>
+<ion-content>
+  <ion-card *ngFor="let item of datat">
+    <ion-card-header>
+      <ion-card-subtitle>Codigo de barra # {{item.codebar}} Fecha {{item.date | date }}</ion-card-subtitle>
+      <ion-card-title>Venta de servicio</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <span><b>Vendedor:</b> {{item.seller}}</span><br>
+      <span><b>Cliente: {{item.name }} - {{ item.dni}}</b> </span><br>
+      <span><b>Total:</b> {{item.total}}</span><br>
+
+
+    </ion-card-content>
+  </ion-card>
+</ion-content>
