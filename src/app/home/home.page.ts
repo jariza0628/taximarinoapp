@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { FirebaseServiceService } from '../services/firebase-service.service';
 import { User } from '../models/users.model';
 import { AlertController } from '@ionic/angular';
+import { Sale } from '../models/sale.model';
 
 @Component({
   selector: 'app-home',
@@ -17,6 +18,12 @@ export class HomePage implements OnInit {
   user: any;
   password: any;
 
+  codemanual: any;
+  loginScanUser: boolean;
+  userLogin: any;
+  datas: any;
+
+  messagefind: any;
 
 
 
@@ -28,11 +35,18 @@ export class HomePage implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.loginScanUser = false;
     this.getAllUsers();
+    this.getUserLogin();
   }
 
 
-
+  getUserLogin() {
+    if (sessionStorage.getItem('user')) {
+      this.userLogin = JSON.parse(sessionStorage.getItem('user'));
+      this.loginScanUser = true;
+    }
+  }
   getAllUsers() {
     this.firebaseServiceService.getfirebase('users').subscribe(
       data => {
@@ -64,8 +78,10 @@ export class HomePage implements OnInit {
     this.data.forEach(element => {
       if (element.user === this.user && element.password === this.password) {
         sessionStorage.setItem('user', JSON.stringify(element));
+        this.loginScanUser = true;
+
         encontroUsuarios = 1;
-        this.router.navigate(['/app/tabs/tab1']);
+        // this.router.navigate(['/app/tabs/tab1']);
       } else {
         nOencontroUsuarios = 2;
       }
@@ -76,7 +92,10 @@ export class HomePage implements OnInit {
 
     // 
   }
-
+  closesession() {
+    this.loginScanUser = false;
+    sessionStorage.removeItem('user');
+  }
   alertUser() {
     this.presentAlert('Alerta', 'Usuario o clave erroneos!');
   }
@@ -98,13 +117,38 @@ export class HomePage implements OnInit {
 
   onChangeTime(e) {
     console.log('e', e);
-    this.goTodetail(e);
-
-
+    this.getDataByCodebar(e);
   }
 
   goTodetail(barcode) {
     this.router.navigate(['/detail-scan', { code: barcode }]);
+  }
+
+  getDataByCodebar(code) {
+    let encontro: boolean;
+    encontro = false;
+    console.log('entro where');
+    this.firebaseServiceService.getByCodebar('sales', code).subscribe(
+      data => {
+        // console.log('dara', data);
+        this.data = data.map(e => {
+          console.log('enontro', e.payload.doc.data());
+          encontro = true;
+          this.messagefind = '';
+          this.goTodetail(code);
+          return {
+            id: e.payload.doc.id,
+            ...e.payload.doc.data()
+          } as Sale;
+        });
+      });
+    if (encontro === false) {
+      console.log('No encontro');
+      this.messagefind = 'Sin resultado';
+
+    }
+
+
   }
 
   async presentAlert(title, messages) {

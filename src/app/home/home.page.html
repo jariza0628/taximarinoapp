@@ -4,22 +4,47 @@
     <img src="../../assets/icon-texto.png">
     <br>
     <ion-list class="ion-padding">
-      <ion-item>
-        <ion-label>Usuarios</ion-label>
-        <ion-select placeholder="Select One" [(ngModel)]="user">
-          <ion-select-option *ngFor="let item of data" value="{{item.user}}">{{item.user}}</ion-select-option>
-        </ion-select>
-      </ion-item>
-      <ion-item>
-        <ion-label position="floating" color="one">Contraseña</ion-label>
-        <ion-input type="password" [(ngModel)]="password"></ion-input>
-      </ion-item>
+      <ng-container *ngIf="!loginScanUser">
+        <ion-item>
+          <ion-label>Usuarios</ion-label>
+          <ion-select placeholder="Select One" [(ngModel)]="user">
+            <ion-select-option *ngFor="let item of data" value="{{item.user}}">{{item.user}}</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating" color="one">Contraseña</ion-label>
+          <ion-input type="password" [(ngModel)]="password"></ion-input>
+        </ion-item>
+      </ng-container>
+      <ng-container *ngIf="loginScanUser">
+        <ion-item>
+          <h3 *ngIf="userLogin">Usuario: {{userLogin.user}} </h3>
+        </ion-item>
+
+        <ion-button color="danger" (click)="closesession()">Cerra sesión</ion-button>
+
+
+      </ng-container>
+
+
     </ion-list>
-    <ion-button color="dark" (click)="login()">Ingresar</ion-button>
-    <ion-item>
-      <ion-label position="floating" color="one">Scan manual</ion-label>
-      <ion-input type="text" [(ngModel)]="codemanual" autofocus="true"  (ionInput)='onChangeTime($event.target.value)'></ion-input>
-    </ion-item>
-    <ion-button color="primary" class="end-position" (click)="scanCode()">Modo Scan</ion-button>
+    <ng-container *ngIf="!loginScanUser">
+
+      <ion-button color="dark" (click)="login()">Ingresar</ion-button>
+    </ng-container>
+    <ng-container *ngIf="loginScanUser">
+      <ion-item>
+        <ion-label position="floating" color="one">Scan manual</ion-label>
+        <ion-input type="text" [(ngModel)]="codemanual" autofocus="true" (ionInput)='onChangeTime($event.target.value)'>
+        </ion-input>
+      </ion-item>
+      <div style="text-align: center;border: none !important;">
+        <h4 *ngIf="messagefind" style="color: brown;background-color: cornsilk;">{{messagefind}}</h4>
+      </div>
+
+      <ion-button color="primary" class="end-position" (click)="scanCode()">Modo Scan</ion-button>
+    </ng-container>
+
+
   </div>
 </ion-content>
