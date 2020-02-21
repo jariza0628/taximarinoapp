@@ -60,7 +60,7 @@ export class HomePage implements OnInit {
       this.presentAlert('Alerta', 'Digita una clave!');
       return;
     }
-    console.log('data', this.password);
+    console.log('data', this.data);
     this.data.forEach(element => {
       if (element.user === this.user && element.password === this.password) {
         sessionStorage.setItem('user', JSON.stringify(element));

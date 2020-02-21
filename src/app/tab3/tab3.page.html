@@ -7,7 +7,7 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <ion-card>
+  <ion-card class="no-margin">
     <ion-card-header>
       <ion-card-title>Mi cuenta</ion-card-title>
     </ion-card-header>
@@ -23,12 +23,34 @@
 
     </ion-card-content>
   </ion-card>
+
   <ion-grid>
     <ion-col>
-      <p>Servicios Disponibles</p>
-      <ion-button>Ver servicios y plane</ion-button>
+      <ion-button color="danger" (click)="colse()">Cerra sesión</ion-button>
+
     </ion-col>
+
+    <ion-col>
+      <p>Planes Disponibles</p>
+    </ion-col>
+    <ion-row class="header">
+      <ion-col size="8">
+        Plan
+      </ion-col>
+      <ion-col size="4">
+        Costo
+      </ion-col>
+    </ion-row>
+    <ion-row *ngFor="let item of data">
+      <ion-col size="8">
+        {{ item.name }}
+      </ion-col>
+      <ion-col size="4">
+        {{ item.totalvalue }}
+      </ion-col>
+    </ion-row>
   </ion-grid>
+
 
 
 

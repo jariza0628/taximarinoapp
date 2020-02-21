@@ -6,7 +6,7 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-  <form [formGroup]="formData" (ngSubmit)="onSubmit1()">
+  <form [formGroup]="formData" (ngSubmit)="sendNewSales()">
     <ion-list style="text-align: center;">
       <ion-item-divider>
         <ion-label>
@@ -20,6 +20,18 @@
       <ion-item>
         <ion-label position="floating">Cedula</ion-label>
         <ion-input type="text" formControlName="dni" name="name"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Hospedaje</ion-label>
+        <ion-input type="text" formControlName="host" name="host"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Cuidad de Procedencia</ion-label>
+        <ion-input type="text" formControlName="citylife" name="citylife"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Telefono</ion-label>
+        <ion-input type="text" formControlName="phone" name="phone"></ion-input>
       </ion-item>
       <ion-item-divider>
         <ion-label>
@@ -90,7 +102,15 @@
         <ion-button color="warning" (click)="scanCode()">SCAN</ion-button>
 
       </ion-item>
-      <p *ngIf="scannedData">{{ scannedData }}</p>
+      <ng-container *ngIf="scannedData">
+        <p *ngFor="let item of scannedData">
+          <img
+          width="22" height="22"
+            src="https://images.vexels.com/media/users/3/157862/isolated/preview/5fc76d9e8d748db3089a489cdd492d4b-barcode-scanning-icon-by-vexels.png"
+            alt=""> &nbsp; {{ item }}</p>
+      </ng-container>
+
+
       <br>
       <ion-button color="dark" type="submit">Guardar</ion-button>
       <ion-item>

@@ -9,7 +9,8 @@
 <ion-content>
   <ion-card *ngFor="let item of datat">
     <ion-card-header>
-      <ion-card-subtitle>Codigo de barra # {{item.codebar}} Fecha {{item.date | date }}</ion-card-subtitle>
+      <ion-card-subtitle><strong>Codigo de barra</strong> # {{item.codebar}}<br> <strong>Fecha</strong>
+        {{item.date | date }}</ion-card-subtitle>
       <ion-card-title>Venta de servicio</ion-card-title>
     </ion-card-header>
 

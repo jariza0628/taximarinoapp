@@ -40,9 +40,14 @@ export class Tab1Page implements OnInit {
     this.arraySelect = [];
     this.arraySelectPlan = [];
 
+    this.scannedData = [];
+
     this.formData = fb.group({
       name: fb.control(''),
       dni: fb.control(''),
+      host: fb.control(''),
+      citylife: fb.control(''),
+      phone: fb.control(''),
       seller: fb.control('', Validators.required),
       codebar: fb.control(null, Validators.required),
       detail: fb.control('', Validators.required),
@@ -63,7 +68,7 @@ export class Tab1Page implements OnInit {
       this.loadDataUser();
       this.presentAlertRadio();
     }, 400);
-   
+
 
   }
 
@@ -74,7 +79,26 @@ export class Tab1Page implements OnInit {
     return n
   }
 
-  onSubmit1() {
+  sendNewSales() {
+
+    if (this.arraySelectPlan.length > 0 || this.arraySelect.length > 0) {
+      if (this.scannedData.length > 0) {
+        this.scannedData.forEach(element => {
+          this.onSubmit1(element);
+          console.log('element', element);
+        });
+        this.scannedData = [];
+      } else {
+        this.presentAlert('Campos obligatorios', 'Debe indicar un código de barra');
+      }
+    } else {
+      this.presentAlert('Campos obligatorios', 'Seleccione por lo menos un plan o un servicio a la venta');
+
+    }
+
+  }
+
+  onSubmit1(code) {
     let formValue;
     let body;
 
@@ -87,8 +111,8 @@ export class Tab1Page implements OnInit {
 
     if (this.arraySelectPlan.length > 0 || this.arraySelect.length > 0) {
 
-      if (this.scannedData) {
-        formValue.codebar = this.scannedData;
+      if (code) {
+        formValue.codebar = code;
       } else {
         this.presentAlert('Campos obligatorios', 'Seleccione por lo menos un plan o un servicio a la venta');
 
@@ -104,7 +128,7 @@ export class Tab1Page implements OnInit {
           efecty: this.total,
           tarjeta: 0,
           typepay: 'Efectivo',
-         };
+        };
         this.save(body);
         console.log('body', body);
 
@@ -305,7 +329,19 @@ export class Tab1Page implements OnInit {
       .then(barcodeData => {
         // alert('Barcode data ' + JSON.stringify(barcodeData));
         sessionStorage.setItem('barcode', JSON.stringify(barcodeData));
-        this.scannedData = barcodeData.text;
+        // this.scannedData = barcodeData.text;
+        let codeDuplicate = false;
+        this.scannedData.forEach(element => {
+          if (element === barcodeData.text) {
+            codeDuplicate = true;
+          }
+
+        });
+        if (!codeDuplicate) {
+          this.scannedData.push(barcodeData.text);
+        } else {
+          this.presentAlert('Alerta', 'El codigo que intenta registra ya fue añadido!');
+        }
       })
       .catch(err => {
         console.log('Error', err);
@@ -317,7 +353,7 @@ export class Tab1Page implements OnInit {
 
   async presentAlertRadio() {
     console.log('alert');
-    
+
     let zones: any;
     zones = [];
     let i = 0;
@@ -334,7 +370,7 @@ export class Tab1Page implements OnInit {
     });
     const alert = await this.alertController.create({
       header: 'Indica Zona de venta',
-      inputs:  [zones],
+      inputs: [zones],
       buttons: [
         {
           text: 'Cancel',
