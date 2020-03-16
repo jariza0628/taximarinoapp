@@ -138,6 +138,7 @@ export class Tab1Page implements OnInit {
         this.totalValue = 0;
         this.arraySelectPlan = [];
         this.arraySelect = [];
+        this.scannedData = [];
         this.formData.reset();
         this.loadDataUser();
       } else {
