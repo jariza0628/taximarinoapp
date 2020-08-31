@@ -31,7 +31,8 @@ export class Tab1Page implements OnInit {
   tarjeta: any;
   typepay: any;
 
-
+  SalesSucces: Array<any>;
+  SalesNoSucces: Array<any>;
 
   constructor(private fb: FormBuilder,
     private barcodeScanner: BarcodeScanner,
@@ -41,6 +42,7 @@ export class Tab1Page implements OnInit {
     this.arraySelectPlan = [];
 
     this.scannedData = [];
+
 
     this.formData = fb.group({
       name: fb.control(''),
@@ -57,6 +59,10 @@ export class Tab1Page implements OnInit {
     });
     this.totalValue = 0;
     this.total = 0;
+
+    this.SalesSucces = [];
+    this.SalesNoSucces = [];
+
 
   }
 
@@ -83,10 +89,21 @@ export class Tab1Page implements OnInit {
 
     if (this.arraySelectPlan.length > 0 || this.arraySelect.length > 0) {
       if (this.scannedData.length > 0) {
+        debugger
         this.scannedData.forEach(element => {
           this.onSubmit1(element);
           console.log('element', element);
         });
+        setTimeout(() => {
+          // somecode
+          if (this.SalesNoSucces.length > 0) {
+            this.presentAlert('Codigos No insertados',
+              'Los suigientes códigos de barra ya posen ventas registradas: ' + JSON.stringify(this.SalesNoSucces));
+          }
+          if (this.SalesSucces.length > 0) {
+            this.presentAlert('Venta creada', 'Se registraron las ventas de lo siguientes codigos: ' + JSON.stringify(this.SalesSucces));
+          }
+        }, 600);
         this.scannedData = [];
       } else {
         this.presentAlert('Campos obligatorios', 'Debe indicar un código de barra');
@@ -95,6 +112,11 @@ export class Tab1Page implements OnInit {
       this.presentAlert('Campos obligatorios', 'Seleccione por lo menos un plan o un servicio a la venta');
 
     }
+
+  }
+
+  getSalesByCode(code) {
+    console.log('entro where');
 
   }
 
@@ -102,73 +124,121 @@ export class Tab1Page implements OnInit {
     let formValue;
     let body;
 
-    let dates = new Date();
-    let dateString, hours;
-    dateString = dates.getFullYear() + "-" + this.appendLeadingZeroes(dates.getMonth() + 1) + "-" + this.appendLeadingZeroes(dates.getDate());
-    hours = dates.getHours() + ":" + dates.getMinutes() + ":" + dates.getSeconds();
-    formValue = this.formData.value;
-    delete formValue.detail;
+    let result;
 
-    if (this.arraySelectPlan.length > 0 || this.arraySelect.length > 0) {
+    this._FirebaseServiceService.getByCodebar('sales', code).subscribe(
+      data => {
+        // console.log('dara', data);
 
-      if (code) {
-        formValue.codebar = code;
-      } else {
-        this.presentAlert('Campos obligatorios', 'Seleccione por lo menos un plan o un servicio a la venta');
+        if (data.length > 0) {
+          debugger
+          this.SalesNoSucces.push(code);
+          console.log('No Duplicados', code);
+        }
+        else {
+          let dates = new Date();
+          let dateString, hours;
+          dateString = dates.getFullYear() + "-" + this.appendLeadingZeroes(dates.getMonth() + 1) + "-" + this.appendLeadingZeroes(dates.getDate());
+          hours = dates.getHours() + ":" + dates.getMinutes() + ":" + dates.getSeconds();
+          formValue = this.formData.value;
+          delete formValue.detail;
+          if (this.arraySelectPlan.length > 0 || this.arraySelect.length > 0) {
+            if (code) {
+              formValue.codebar = code;
+            } else {
+              this.presentAlert('Campos obligatorios', 'Seleccione por lo menos un plan o un servicio a la venta');
+            }
+            if (formValue.codebar !== null) {
+              if (formValue.seller === null || formValue.seller === '') {
+                formValue.seller = this.currentUser.user;
+              }
+              if (formValue.dicount === null || formValue.dicount === '') {
+                formValue.dicount = 0;
+              }
+              body = {
+                id: '0',
+                ...formValue,
+                plans: this.arraySelectPlan,
+                detail: this.arraySelect,
+                date: dateString, hour: hours,
+                total: this.total,
+                state: 'Activo',
+                efecty: this.total,
+                tarjeta: 0,
+                typepay: 'Efectivo',
+              };
+              this.save(body);
+              console.log('body', body);
+              this.SalesSucces.push(code);
+              this.loadDataUser();
+            } else {
+              this.presentAlert('Campos obligatorios', 'Debe indicar un código de barra');
+            }
+          } else {
+            this.presentAlert('Campos obligatorios', 'Seleccione por lo menos un plan o un servicio a la venta');
+          }
+        }
 
-      }
-      if (formValue.codebar !== null) {
-        body = {
-          ...formValue,
-          plans: this.arraySelectPlan,
-          detail: this.arraySelect,
-          date: dateString, hour: hours,
-          total: this.total,
-          state: 'Activo',
-          efecty: this.total,
-          tarjeta: 0,
-          typepay: 'Efectivo',
-        };
-        this.save(body);
-        console.log('body', body);
-
-        this.presentAlert('Venta creada', 'Su venta a sido registrada');
-
-        this.total = 0;
-        this.totalValue = 0;
-        this.arraySelectPlan = [];
-        this.arraySelect = [];
-        this.scannedData = [];
-        this.formData.reset();
-        this.loadDataUser();
-      } else {
-        this.presentAlert('Campos obligatorios', 'Debe indicar un código de barra');
-
-      }
-    } else {
-      this.presentAlert('Campos obligatorios', 'Seleccione por lo menos un plan o un servicio a la venta');
-    }
+      });
   }
   async save(body) {
-    this._FirebaseServiceService.createFirebase('sales', body);
+    console.log('save body', body);
+    if (body) {
+      this._FirebaseServiceService.createFirebase('sales', body);
+    } else {
+      console.log('err send body');
+    }
+    setTimeout(() => {
+      this.total = 0;
+      this.totalValue = 0;
+      this.arraySelectPlan = [];
+      this.arraySelect = [];
+      this.scannedData = [];
+      this.SalesNoSucces = [];
+      this.SalesSucces = [];
+
+      // this.resetForm();
+    }, 1000);
   }
 
-
-  loadDataUser() {
-
-    this.currentUser = JSON.parse(sessionStorage.getItem('user'));
-    console.log('loadDataUser', this.currentUser);
-
+  resetForm() {
     this.formData.setValue({
       name: '',
       dni: '',
       seller: this.currentUser.user,
       codebar: null,
       detail: '',
+      host: '',
       dicount: '',
       service: '',
       zone: '',
+      citylife: '',
+      phone: ''
     });
+    this.scannedData = [];
+    this.pointsale = [];
+    this.arraySelect = [];
+  }
+
+  loadDataUser() {
+
+    this.currentUser = JSON.parse(sessionStorage.getItem('user'));
+    console.log('loadDataUser', this.currentUser);
+    /*
+    this.formData.setValue({
+      name: '',
+      dni: '',
+      seller: this.currentUser.user,
+      codebar: null,
+      detail: '',
+      host: '',
+      dicount: '',
+      service: '',
+      zone: '',
+      citylife: '',
+  
+
+    });*/
   }
 
   calcValue(val) {
@@ -263,6 +333,101 @@ export class Tab1Page implements OnInit {
     this.arraySelect.push(data);
     console.log(this.arraySelect);
   }
+  addRangeCodes() {
+    let showrange;
+    if (localStorage.getItem('ShowMessageRanges')) {
+      showrange = localStorage.getItem('ShowMessageRanges');
+      if (showrange === 'false') {
+        this.presentAlertConfirmMesaje()
+      } else {
+        this.presentAlertConfirm();
+      }
+    } else {
+      this.presentAlertConfirmMesaje()
+    }
+  }
+  async presentAlertConfirmMesaje() {
+    const alert = await this.alertController.create({
+      cssClass: 'my-custom-class',
+      header: 'Importante!',
+      message: 'Esta opción permite generar consecutivos automanticamente, debes tener en cuenta que debes tener dispoble fisicamente todas las manillas',
+
+      inputs: [
+        {
+          name: 'name1',
+          type: 'checkbox',
+          label: 'No volver a mostrar este mensaje',
+          checked: false,
+          value: 'value1'
+        }
+      ],
+      buttons: [
+        {
+          text: 'Continuar',
+          handler: (result) => {
+            console.log('Confirm Okay', result);
+            if (result[0] === 'value1') {
+              localStorage.setItem('ShowMessageRanges', 'true')
+            } else {
+              localStorage.setItem('ShowMessageRanges', 'false')
+            }
+            this.presentAlertConfirm();
+          }
+        }
+      ]
+    });
+
+
+    await alert.present();
+  }
+  async presentAlertConfirm() {
+    let rango1, rango2;
+    const alert = await this.alertController.create({
+      cssClass: 'my-custom-class',
+      header: 'Indique el rango!',
+      inputs: [
+        {
+          name: 'name1',
+          type: 'number',
+          placeholder: '202010000',
+          min: -0,
+
+        },
+        {
+          min: -0,
+          name: 'name2',
+          type: 'number',
+          placeholder: '202010050'
+        }
+      ],
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {
+            console.log('Confirm Cancel: blah');
+          }
+        }, {
+          text: 'Generar',
+          handler: (data) => {
+            console.log('Confirm Okay', data.name1);
+            rango1 = parseInt(data.name1);
+            rango2 = parseInt(data.name2);
+            if (rango1 < rango2) {
+              for (let index = rango1; index <= rango2; index++) {
+                this.addCodeRonge(index);
+              }
+            }
+          }
+        }
+      ]
+    });
+
+
+    await alert.present();
+  }
+
 
 
   removeItemFromArr(item) {
@@ -273,6 +438,15 @@ export class Tab1Page implements OnInit {
     if (i !== -1) {
       this.arraySelect.splice(i, 1);
       this.total = this.total - item.totalvalue;
+
+    }
+  }
+  removeItemFromArrCodeBar(item) {
+    let i;
+    i = this.scannedData.indexOf(item);
+
+    if (i !== -1) {
+      this.scannedData.splice(i, 1);
 
     }
   }
@@ -323,7 +497,52 @@ export class Tab1Page implements OnInit {
 
     await alert.present();
   }
+  addCodeManula() {
+    //       let formValue = this._formEntity.value;
+    if (this.formData.controls.codebar.value) {
+      let codeDuplicate = false;
+      this.scannedData.forEach(element => {
+        if (element === this.formData.controls.codebar.value) {
+          codeDuplicate = true;
+        }
 
+      });
+      if (!codeDuplicate) {
+        this.scannedData.push(this.formData.controls.codebar.value);
+
+      } else {
+        this.presentAlert('Alerta', 'El codigo que intenta registra ya fue añadido!');
+      }
+    } else {
+      this.presentAlert('Alerta', 'Digite un codigo de barra!');
+      console.log('Code', this.formData.controls.codebar.value);
+
+    }
+
+  }
+  addCodeRonge(code) {
+    //       let formValue = this._formEntity.value;
+    if (code) {
+      let codeDuplicate = false;
+      this.scannedData.forEach(element => {
+        if (element === code) {
+          codeDuplicate = true;
+        }
+
+      });
+      if (!codeDuplicate) {
+        this.scannedData.push(code);
+
+      } else {
+        this.presentAlert('Alerta', 'El codigo que intenta registra ya fue añadido!');
+      }
+    } else {
+      this.presentAlert('Alerta', 'Digite un codigo de barra!');
+      console.log('Code', code);
+
+    }
+
+  }
   scanCode() {
     this.barcodeScanner
       .scan()

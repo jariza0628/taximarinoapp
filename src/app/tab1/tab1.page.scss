@@ -9,3 +9,12 @@ ion-item-divider {
   background-color: rgb(211, 211, 211);
   font-weight: 600;
 }
+.codebox{
+  border-radius: 5px;
+  padding: 2px 8px;
+  margin: auto;
+  width: 80%;
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px gray solid;
+}

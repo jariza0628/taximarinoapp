@@ -7,7 +7,10 @@
       <ion-item>
         <ion-label>Usuarios</ion-label>
         <ion-select placeholder="Select One" [(ngModel)]="user">
-          <ion-select-option *ngFor="let item of data" value="{{item.user}}">{{item.user}}</ion-select-option>
+          <ng-container *ngFor="let item of data">
+            <ion-select-option *ngIf="item.type === 'Vendedor'" value="{{item.user}}">{{item.user}}</ion-select-option>
+          </ng-container>
+          
         </ion-select>
       </ion-item>
       <ion-item>

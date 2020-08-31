@@ -19,7 +19,7 @@
       </ion-item>
       <ion-item>
         <ion-label position="floating">Cedula</ion-label>
-        <ion-input type="text" formControlName="dni" name="name"></ion-input>
+        <ion-input type="number" formControlName="dni" name="name"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label position="floating">Hospedaje</ion-label>
@@ -31,7 +31,7 @@
       </ion-item>
       <ion-item>
         <ion-label position="floating">Telefono</ion-label>
-        <ion-input type="text" formControlName="phone" name="phone"></ion-input>
+        <ion-input type="number" formControlName="phone" name="phone"></ion-input>
       </ion-item>
       <ion-item-divider>
         <ion-label>
@@ -98,20 +98,30 @@
       <ion-item>
         <ion-label>Escanear codigo:</ion-label>
         <ion-input type="text" formControlName="codebar" name="codebar"></ion-input>
+        <ion-button color="danger" (click)="addCodeManula()">Añadir</ion-button>
 
         <ion-button color="warning" (click)="scanCode()">SCAN</ion-button>
 
       </ion-item>
-      <ng-container *ngIf="scannedData">
-        <p *ngFor="let item of scannedData">
-          <img
-          width="22" height="22"
-            src="https://images.vexels.com/media/users/3/157862/isolated/preview/5fc76d9e8d748db3089a489cdd492d4b-barcode-scanning-icon-by-vexels.png"
-            alt=""> &nbsp; {{ item }}</p>
+      <ion-button color="danger" (click)="addRangeCodes()">Generar Consecutivos</ion-button>
+
+      <br>
+      <ng-container *ngIf="scannedData.length > 0">
+        <div class="codebox">
+          <p *ngFor="let item of scannedData">
+            <img width="22" height="22"
+              src="https://images.vexels.com/media/users/3/157862/isolated/preview/5fc76d9e8d748db3089a489cdd492d4b-barcode-scanning-icon-by-vexels.png"
+              alt=""> &nbsp; {{ item }}
+            <img (click)="removeItemFromArrCodeBar(item)" src="https://img.icons8.com/plasticine/2x/delete-sign.png" width="20"
+              height="20" style="float: right;">
+          </p>
+        </div>
+
       </ng-container>
 
 
       <br>
+      <ion-button color="primary" (click)="resetForm()">Limpiar</ion-button>
       <ion-button color="dark" type="submit">Guardar</ion-button>
       <ion-item>
         <ion-label>Total: {{totalValue + total}} </ion-label>

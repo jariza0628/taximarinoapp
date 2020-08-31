@@ -38,14 +38,11 @@ export class Tab2Page implements OnInit {
           } as Sale;
         });
       });
-
     console.log('data', this.data);
-
   }
 
   datas(data) {
     console.log('datassss', data);
-
     this.datat.push(data);
   }
 
