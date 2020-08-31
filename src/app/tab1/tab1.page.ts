@@ -89,7 +89,6 @@ export class Tab1Page implements OnInit {
 
     if (this.arraySelectPlan.length > 0 || this.arraySelect.length > 0) {
       if (this.scannedData.length > 0) {
-        debugger
         this.scannedData.forEach(element => {
           this.onSubmit1(element);
           console.log('element', element);
@@ -131,7 +130,6 @@ export class Tab1Page implements OnInit {
         // console.log('dara', data);
 
         if (data.length > 0) {
-          debugger
           this.SalesNoSucces.push(code);
           console.log('No Duplicados', code);
         }
