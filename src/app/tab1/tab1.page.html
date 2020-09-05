@@ -26,7 +26,7 @@
         <ion-input type="text" formControlName="host" name="host"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label position="floating">Cuidad de Procedencia</ion-label>
+        <ion-label position="floating">Ciudad de Procedencia</ion-label>
         <ion-input type="text" formControlName="citylife" name="citylife"></ion-input>
       </ion-item>
       <ion-item>
@@ -53,6 +53,7 @@
           <ion-select-option *ngFor="let item of data" value="{{item.id}}">{{item.name}}</ion-select-option>
         </ion-select>
       </ion-item>
+      <!-- ************************ -->
       <ng-container *ngIf="arraySelectPlan && arraySelectPlan.length > 0">
         <ion-item-divider>
           <ion-label>
@@ -73,6 +74,7 @@
           <ion-select-option *ngFor="let item of services" value="{{item.id}}">{{item.name}}</ion-select-option>
         </ion-select>
       </ion-item>
+      <!-- @@@@@@@@@@@@@@@@@@@@@@@@@ -->
       <ng-container *ngIf="arraySelect && arraySelect.length > 0">
         <ion-item-divider>
           <ion-label>
@@ -112,21 +114,18 @@
             <img width="22" height="22"
               src="https://images.vexels.com/media/users/3/157862/isolated/preview/5fc76d9e8d748db3089a489cdd492d4b-barcode-scanning-icon-by-vexels.png"
               alt=""> &nbsp; {{ item }}
-            <img (click)="removeItemFromArrCodeBar(item)" src="https://img.icons8.com/plasticine/2x/delete-sign.png" width="20"
-              height="20" style="float: right;">
+            <img (click)="removeItemFromArrCodeBar(item)" src="https://img.icons8.com/plasticine/2x/delete-sign.png"
+              width="20" height="20" style="float: right;">
           </p>
         </div>
 
       </ng-container>
-
-
       <br>
       <ion-button color="primary" (click)="resetForm()">Limpiar</ion-button>
       <ion-button color="dark" type="submit">Guardar</ion-button>
       <ion-item>
-        <ion-label>Total: {{totalValue + total}} </ion-label>
-
-
+        <ion-label *ngIf="scannedData.length > 0">Total: {{(totalValue + total) * scannedData.length }} </ion-label>
+        <ion-label *ngIf="scannedData.length === 0">Total: {{(totalValue + total) }} </ion-label>
       </ion-item>
     </ion-list>
   </form>

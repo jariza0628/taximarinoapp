@@ -1,0 +1,136 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Editar Venta Existente</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="8">
+        <ion-searchbar (ionChange)="searchByCode()" inputmode="numeric" [(ngModel)]="searchDataValue"></ion-searchbar>
+      </ion-col>
+      <ion-col size="4">
+        <ion-button style="height: 85%;" (click)="scanCode()">
+          SCAN
+          <ion-icon slot="end" name="barcode"></ion-icon>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ng-container *ngIf="!result.total">
+    <ion-row>
+      <ion-col size="12">
+        <p style="color: gray;font-size: 18px;text-align: center;">No hay resultados, busca un codigo de barras.</p>
+      </ion-col>
+    </ion-row>
+  </ng-container>
+  <ng-container *ngIf="result.total > 0">
+    <ion-grid>
+
+      <ion-row>
+        <ion-col size="6">
+          <span class="snall-text"> Fecha: {{result.date }} &nbsp; {{ result.hour}}</span>
+        </ion-col>
+        <ion-col size="6">
+          <span style="color: brown;font-weight: 800;"> Valor: $ {{result.total}}</span>
+        </ion-col>
+        <ion-col size="7">
+          <ion-item>
+            <ion-label position="floating"> Nombre:</ion-label>
+            <ion-input [(ngModel)]="result.name" name="name" ngDefaultControl></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size="5">
+          <ion-item>
+            <ion-label position="floating">Cedula:</ion-label>
+            <ion-input [(ngModel)]="result.dni" name="name"></ion-input>
+          </ion-item>
+        </ion-col>
+        <!-- 
+           <ion-col size="6">
+          <ion-item>
+            <ion-label position="floating">Telefono:</ion-label>
+            <ion-input [(ngModel)]="result.phone" name="phone" ngDefaultControl></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size="6">
+          <ion-item>
+            <ion-label position="floating">Hospedaje:</ion-label>
+            <ion-input [(ngModel)]="result.host" name="name"></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size="6">
+          <ion-item>
+            <ion-label position="floating">Ciudad origen:</ion-label>
+            <ion-input [(ngModel)]="result.citylife" name="citylife"></ion-input>
+          </ion-item>
+        </ion-col>
+          -->
+      </ion-row>
+      <ion-row>
+        <ion-card>
+          <ion-item>
+            <ion-icon name="person" slot="start"></ion-icon>
+            <ion-label>Servicios</ion-label>
+          </ion-item>
+
+          <ion-card-content>
+            Servicios vendidos
+
+            <ion-item *ngFor="let item of result.detail" style="position: relative;">
+              <ion-label>{{item.name}} - {{item.publicvalue}}</ion-label>
+              <img (click)="removeItemFromArr(item)" src="https://img.icons8.com/plasticine/2x/delete-sign.png"
+                width="20" height="20" style="float: right;">
+            </ion-item>
+            Adicionar
+            <ion-item>
+              <ion-label>Servicios individuales</ion-label>
+              <ion-select placeholder="Select One" (ionChange)="onChange($event)">
+                <ion-select-option *ngFor="let item of services" value="{{item.id}}">{{item.name}}</ion-select-option>
+              </ion-select>
+            </ion-item>
+
+          </ion-card-content>
+        </ion-card>
+        <ion-card>
+          <ion-item>
+            <ion-icon name="people" slot="start"></ion-icon>
+            <ion-label>Combos</ion-label>
+          </ion-item>
+          <ion-card-content>
+            Combos vendidos
+            <ion-item *ngFor="let item of result.plans" style="position: relative;">
+              <ion-label>{{item.name}} - {{item.publicvalue}}</ion-label>
+              <img (click)="removeItemFromArrPlan(item)" src="https://img.icons8.com/plasticine/2x/delete-sign.png"
+                width="20" height="20" style="float: right;">
+            </ion-item>
+            Adicionar:
+            <ion-select placeholder="Select One" (ionChange)="onChangePlan($event)">
+              <ion-select-option *ngFor="let item of plans" value="{{item.id}}">{{item.name}}</ion-select-option>
+            </ion-select>
+          </ion-card-content>
+        </ion-card>
+      </ion-row>
+      <ion-row>
+        <ion-col style="text-align: center;font-style: 20px;font-weight: 800;">
+          <h5>Saldo</h5>
+          <span style="color: darkred;">$ {{ totalAdd }}</span>
+        </ion-col>
+      </ion-row>
+      <ion-row style="text-align: center;">
+        <ion-button (click)="sendEditSales()">
+          Guardar
+          <ion-icon slot="end" name="barcode"></ion-icon>
+        </ion-button>
+        <ion-button (click)="clear()"  color="warning" >
+          Limpiar
+          <ion-icon slot="end" name="barcode"></ion-icon>
+        </ion-button>
+      </ion-row>
+
+    </ion-grid>
+  </ng-container>
+
+
+</ion-content>

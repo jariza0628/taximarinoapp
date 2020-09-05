@@ -22,6 +22,9 @@ export class Tab2Page implements OnInit {
     this.getSalesByUser(this.currentUser.user);
 
   }
+  ionViewWillLeave() {
+    this.datat = [];
+  }
 
 
   getSalesByUser(userName) {

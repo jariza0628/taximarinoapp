@@ -16,4 +16,6 @@ export class Sale {
     detail?: any;
     plans?: any;
     seller: any;
+    citylife?: any;
+    total?:any 
 }

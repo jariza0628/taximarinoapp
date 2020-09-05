@@ -37,7 +37,8 @@ export class Tab1Page implements OnInit {
   constructor(private fb: FormBuilder,
     private barcodeScanner: BarcodeScanner,
     private _FirebaseServiceService: FirebaseServiceService,
-    public alertController: AlertController) {
+    public alertController: AlertController
+    ) {
     this.arraySelect = [];
     this.arraySelectPlan = [];
 
@@ -72,10 +73,9 @@ export class Tab1Page implements OnInit {
     this.getDataZones();
     setTimeout(() => {
       this.loadDataUser();
-      this.presentAlertRadio();
+      // this.presentAlertRadio();
     }, 400);
-
-
+    this.loadDataUser();
   }
 
   appendLeadingZeroes(n) {
@@ -86,7 +86,6 @@ export class Tab1Page implements OnInit {
   }
 
   sendNewSales() {
-
     if (this.arraySelectPlan.length > 0 || this.arraySelect.length > 0) {
       if (this.scannedData.length > 0) {
         this.scannedData.forEach(element => {
@@ -109,26 +108,20 @@ export class Tab1Page implements OnInit {
       }
     } else {
       this.presentAlert('Campos obligatorios', 'Seleccione por lo menos un plan o un servicio a la venta');
-
     }
-
   }
 
   getSalesByCode(code) {
     console.log('entro where');
-
   }
 
   onSubmit1(code) {
     let formValue;
     let body;
-
     let result;
-
     this._FirebaseServiceService.getByCodebar('sales', code).subscribe(
       data => {
         // console.log('dara', data);
-
         if (data.length > 0) {
           this.SalesNoSucces.push(code);
           console.log('No Duplicados', code);
@@ -205,10 +198,10 @@ export class Tab1Page implements OnInit {
       dni: '',
       seller: this.currentUser.user,
       codebar: null,
-      detail: '',
+      detail: [],
       host: '',
       dicount: '',
-      service: '',
+      service: [],
       zone: '',
       citylife: '',
       phone: ''
@@ -316,7 +309,6 @@ export class Tab1Page implements OnInit {
   }
 
   addValueToArraySelect(item) {
-
     this._FirebaseServiceService.getById('service', item).then(
       datas => {
         console.log('datas', datas.data());
