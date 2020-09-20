@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FirebaseServiceService } from '../services/firebase-service.service';
-import { Sale } from '../models/sale.model';
+import { GeneralSale, Sale } from '../models/sale.model';
 import { Plan } from '../models/plan.model';
 import { Service } from '../models/service.model';
 import { AlertController } from '@ionic/angular';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { async } from 'rxjs/internal/scheduler/async';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-tab1',
@@ -33,6 +34,8 @@ export class Tab1Page implements OnInit {
 
   SalesSucces: Array<any>;
   SalesNoSucces: Array<any>;
+
+  generalSale: GeneralSale = {};
 
   constructor(private fb: FormBuilder,
     private barcodeScanner: BarcodeScanner,
@@ -88,10 +91,23 @@ export class Tab1Page implements OnInit {
   sendNewSales() {
     if (this.arraySelectPlan.length > 0 || this.arraySelect.length > 0) {
       if (this.scannedData.length > 0) {
+        const saleIdentifier = uuidv4();
+
+        this.generalSale = {
+          ...this.generalSale,
+          clientName: this.formData.value.name,
+          sellerName: this.formData.value.seller,
+          total: (this.totalValue + this.total) * this.scannedData.length,
+          idGenerated: saleIdentifier,
+          date: new Date(),
+          clientIdentification: this.formData.value.dni,
+        };
+
         this.scannedData.forEach(element => {
-          this.onSubmit1(element);
+          this.onSubmit1(element, saleIdentifier);
           console.log('element', element);
         });
+
         setTimeout(() => {
           // somecode
           if (this.SalesNoSucces.length > 0) {
@@ -99,6 +115,19 @@ export class Tab1Page implements OnInit {
               'Los suigientes códigos de barra ya posen ventas registradas: ' + JSON.stringify(this.SalesNoSucces));
           }
           if (this.SalesSucces.length > 0) {
+            const sale = this._FirebaseServiceService.createFirebase('generalSale', this.generalSale)
+            console.log(sale);
+            sale.then(result => {
+              this._FirebaseServiceService.getById('generalSale', result.id).then(
+                datas => {
+                  const generalSale = datas.data();
+                  this._FirebaseServiceService.getSaleByIdGenerated('sales', 'idGeneralSale', generalSale.idGenerated)
+                    .subscribe(res => {
+                      const list = res.map(data => data.payload.doc.data());
+                      console.log(list);
+                    });
+                });
+            });
             this.presentAlert('Venta creada', 'Se registraron las ventas de lo siguientes codigos: ' + JSON.stringify(this.SalesSucces));
           }
         }, 600);
@@ -115,7 +144,7 @@ export class Tab1Page implements OnInit {
     console.log('entro where');
   }
 
-  onSubmit1(code) {
+  onSubmit1(code, saleIdentifier) {
     let formValue;
     let body;
     let result;
@@ -157,6 +186,7 @@ export class Tab1Page implements OnInit {
                 efecty: this.total,
                 tarjeta: 0,
                 typepay: 'Efectivo',
+                idGeneralSale: saleIdentifier,
               };
               this.save(body);
               console.log('body', body);
@@ -209,27 +239,14 @@ export class Tab1Page implements OnInit {
     this.scannedData = [];
     this.pointsale = [];
     this.arraySelect = [];
+    this.totalValue = 0
+    this.total = 0;
+    this.arraySelectPlan = []
   }
 
   loadDataUser() {
-
     this.currentUser = JSON.parse(sessionStorage.getItem('user'));
     console.log('loadDataUser', this.currentUser);
-    /*
-    this.formData.setValue({
-      name: '',
-      dni: '',
-      seller: this.currentUser.user,
-      codebar: null,
-      detail: '',
-      host: '',
-      dicount: '',
-      service: '',
-      zone: '',
-      citylife: '',
-  
-
-    });*/
   }
 
   calcValue(val) {
@@ -298,20 +315,18 @@ export class Tab1Page implements OnInit {
     this.addValueToArraySelect(deviceValue.detail.value);
   }
 
-  onChangePlan(deviceValue) {
-    console.log(deviceValue.detail.value);
-    this.addValueToArraySelectPlan(deviceValue.detail.value);
-  }
+ 
 
   getRecDet(deviceValue: any) {
     console.log(deviceValue);
     this.addValueToArraySelect(deviceValue);
   }
-
+  /** Añadir Servicio individual al array */
   addValueToArraySelect(item) {
     this._FirebaseServiceService.getById('service', item).then(
       datas => {
         console.log('datas', datas.data());
+        debugger
         this.ps(datas.data());
       }, err => {
         console.log(err);
@@ -323,112 +338,14 @@ export class Tab1Page implements OnInit {
     this.arraySelect.push(data);
     console.log(this.arraySelect);
   }
-  addRangeCodes() {
-    let showrange;
-    if (localStorage.getItem('ShowMessageRanges')) {
-      showrange = localStorage.getItem('ShowMessageRanges');
-      if (showrange === 'false') {
-        this.presentAlertConfirmMesaje()
-      } else {
-        this.presentAlertConfirm();
-      }
-    } else {
-      this.presentAlertConfirmMesaje()
-    }
-  }
-  async presentAlertConfirmMesaje() {
-    const alert = await this.alertController.create({
-      cssClass: 'my-custom-class',
-      header: 'Importante!',
-      message: 'Esta opción permite generar consecutivos automanticamente, debes tener en cuenta que debes tener dispoble fisicamente todas las manillas',
-
-      inputs: [
-        {
-          name: 'name1',
-          type: 'checkbox',
-          label: 'No volver a mostrar este mensaje',
-          checked: false,
-          value: 'value1'
-        }
-      ],
-      buttons: [
-        {
-          text: 'Continuar',
-          handler: (result) => {
-            console.log('Confirm Okay', result);
-            if (result[0] === 'value1') {
-              localStorage.setItem('ShowMessageRanges', 'true')
-            } else {
-              localStorage.setItem('ShowMessageRanges', 'false')
-            }
-            this.presentAlertConfirm();
-          }
-        }
-      ]
-    });
-
-
-    await alert.present();
-  }
-  async presentAlertConfirm() {
-    let rango1, rango2;
-    const alert = await this.alertController.create({
-      cssClass: 'my-custom-class',
-      header: 'Indique el rango!',
-      inputs: [
-        {
-          name: 'name1',
-          type: 'number',
-          placeholder: '202010000',
-          min: -0,
-
-        },
-        {
-          min: -0,
-          name: 'name2',
-          type: 'number',
-          placeholder: '202010050'
-        }
-      ],
-      buttons: [
-        {
-          text: 'Cancelar',
-          role: 'cancel',
-          cssClass: 'secondary',
-          handler: () => {
-            console.log('Confirm Cancel: blah');
-          }
-        }, {
-          text: 'Generar',
-          handler: (data) => {
-            console.log('Confirm Okay', data.name1);
-            rango1 = parseInt(data.name1);
-            rango2 = parseInt(data.name2);
-            if (rango1 < rango2) {
-              for (let index = rango1; index <= rango2; index++) {
-                this.addCodeRonge(index);
-              }
-            }
-          }
-        }
-      ]
-    });
-
-
-    await alert.present();
-  }
-
-
 
   removeItemFromArr(item) {
-
     let i;
     i = this.arraySelect.indexOf(item);
-
+    debugger
     if (i !== -1) {
       this.arraySelect.splice(i, 1);
-      this.total = this.total - item.totalvalue;
-
+      this.totalValue = this.totalValue - item.publicvalue;
     }
   }
   removeItemFromArrCodeBar(item) {
@@ -443,6 +360,10 @@ export class Tab1Page implements OnInit {
   /***
    * Planes opciones
    */
+  onChangePlan(deviceValue) {
+    console.log(deviceValue.detail.value);
+    this.addValueToArraySelectPlan(deviceValue.detail.value);
+  }
   getRecDetPlan(deviceValue: any) {
     console.log(deviceValue);
     this.addValueToArraySelect(deviceValue);
@@ -460,7 +381,7 @@ export class Tab1Page implements OnInit {
     );
   }
   psPlan(data) {
-    this.total = data.totalvalue;
+    this.total = this.total + data.totalvalue;
     this.arraySelectPlan.push(data);
     console.log(this.arraySelectPlan);
   }
@@ -468,7 +389,7 @@ export class Tab1Page implements OnInit {
 
   removeItemFromArrPlan(item: any) {
     console.log(item);
-
+    debugger
     let i;
     i = this.arraySelectPlan.indexOf(item);
 
@@ -478,15 +399,7 @@ export class Tab1Page implements OnInit {
     }
   }
 
-  async presentAlert(title, msj) {
-    const alert = await this.alertController.create({
-      header: title,
-      message: msj,
-      buttons: ['OK']
-    });
-
-    await alert.present();
-  }
+ 
   addCodeManula() {
     //       let formValue = this._formEntity.value;
     if (this.formData.controls.codebar.value) {
@@ -533,6 +446,19 @@ export class Tab1Page implements OnInit {
     }
 
   }
+  addRangeCodes() {
+    let showrange;
+    if (localStorage.getItem('ShowMessageRanges')) {
+      showrange = localStorage.getItem('ShowMessageRanges');
+      if (showrange === 'false') {
+        this.presentAlertConfirmMesaje()
+      } else {
+        this.presentAlertConfirm();
+      }
+    } else {
+      this.presentAlertConfirmMesaje()
+    }
+  }
   scanCode() {
     this.barcodeScanner
       .scan()
@@ -560,7 +486,51 @@ export class Tab1Page implements OnInit {
       codebar: this.scannedData
     });
   }
+  async presentAlertConfirm() {
+    let rango1, rango2;
+    const alert = await this.alertController.create({
+      cssClass: 'my-custom-class',
+      header: 'Indique el rango!',
+      inputs: [
+        {
+          name: 'name1',
+          type: 'number',
+          placeholder: '202010000',
+          min: -0,
 
+        },
+        {
+          min: -0,
+          name: 'name2',
+          type: 'number',
+          placeholder: '202010050'
+        }
+      ],
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {
+            console.log('Confirm Cancel: blah');
+          }
+        }, {
+          text: 'Generar',
+          handler: (data) => {
+            console.log('Confirm Okay', data.name1);
+            rango1 = parseInt(data.name1);
+            rango2 = parseInt(data.name2);
+            if (rango1 < rango2) {
+              for (let index = rango1; index <= rango2; index++) {
+                this.addCodeRonge(index);
+              }
+            }
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
   async presentAlertRadio() {
     console.log('alert');
 
@@ -600,10 +570,66 @@ export class Tab1Page implements OnInit {
 
     await alert.present();
   }
+  async presentAlertConfirmMesaje() {
+    const alert = await this.alertController.create({
+      cssClass: 'my-custom-class',
+      header: 'Importante!',
+      message: 'Esta opción permite generar consecutivos automanticamente, debes tener en cuenta que debes tener dispoble fisicamente todas las manillas',
+
+      inputs: [
+        {
+          name: 'name1',
+          type: 'checkbox',
+          label: 'No volver a mostrar este mensaje',
+          checked: false,
+          value: 'value1'
+        }
+      ],
+      buttons: [
+        {
+          text: 'Continuar',
+          handler: (result) => {
+            console.log('Confirm Okay', result);
+            if (result[0] === 'value1') {
+              localStorage.setItem('ShowMessageRanges', 'true')
+            } else {
+              localStorage.setItem('ShowMessageRanges', 'false')
+            }
+            this.presentAlertConfirm();
+          }
+        }
+      ]
+    });
 
 
+    await alert.present();
+  }
+  async presentAlert(title, msj) {
+    const alert = await this.alertController.create({
+      header: title,
+      message: msj,
+      buttons: ['OK']
+    });
+
+    await alert.present();
+  }
 
 
+  doRefresh(event) {
+    console.log('Begin async operation');
+    this.getData();
+    this.getDataServices();
+    this.getDataZones();
+    setTimeout(() => {
+      this.loadDataUser();
+      // this.presentAlertRadio();
+    }, 400);
+    this.loadDataUser();
+    setTimeout(() => {
+      console.log('Async operation has ended');
+      event.target.complete();
+    }, 2000);
+  }
 
 
 

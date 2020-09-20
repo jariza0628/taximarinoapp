@@ -7,7 +7,14 @@
 </ion-header>
 
 <ion-content>
-  
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="chevron-down-circle-outline"
+      pullingText="Pull to refresh"
+      refreshingSpinner="circles"
+      refreshingText="Actualizando...">
+    </ion-refresher-content>
+  </ion-refresher>
   <ion-card *ngFor="let item of datat">
     <ion-card-header>
       <ion-card-subtitle><strong>Codigo de barra</strong> # {{item.codebar}}<br> <strong>Fecha</strong>

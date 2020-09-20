@@ -1,4 +1,12 @@
 <ion-content class="ion-no-padding">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content
+      pullingIcon="chevron-down-circle-outline"
+      pullingText="Pull to refresh"
+      refreshingSpinner="circles"
+      refreshingText="Actualizando...">
+    </ion-refresher-content>
+  </ion-refresher>
   <ion-grid>
     <ion-row>
       <ion-col size="12" style="text-align: center;">
@@ -109,6 +117,7 @@
 
       <br>
       <ng-container *ngIf="scannedData.length > 0">
+        <p>Numero de Codigos añadidos: {{ scannedData.length }}</p>
         <div class="codebox">
           <p *ngFor="let item of scannedData">
             <img width="22" height="22"

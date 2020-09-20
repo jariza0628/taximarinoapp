@@ -19,3 +19,16 @@ export class Sale {
     citylife?: any;
     total?:any 
 }
+export interface GeneralSale {
+    clientName?: string;
+    clientIdentification?: string;
+    sellerName?: string;
+    paymentType?: 'card' | 'credit' | 'cash' | 'mixed';
+    card?: number;
+    cash?: number;
+    idGenerated?: string;
+    id?: string;
+    total?: number;
+    date?: Date;
+  }
+  

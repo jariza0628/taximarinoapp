@@ -18,12 +18,17 @@ export class Tab2Page implements OnInit {
   }
 
   ngOnInit() {
+    this.datat = [];
     this.currentUser = JSON.parse(sessionStorage.getItem('user'));
     this.getSalesByUser(this.currentUser.user);
 
   }
+  ionViewWillEnter(){
+    this.currentUser = JSON.parse(sessionStorage.getItem('user'));
+    this.getSalesByUser(this.currentUser.user);
+  }
   ionViewWillLeave() {
-    this.datat = [];
+    // this.datat = [];
   }
 
 
@@ -48,6 +53,19 @@ export class Tab2Page implements OnInit {
     console.log('datassss', data);
     this.datat.push(data);
   }
+  doRefresh(event) {
+    this.datat = [];
+
+    console.log('Begin async operation');
+    this.currentUser = JSON.parse(sessionStorage.getItem('user'));
+    this.getSalesByUser(this.currentUser.user);
+  
+     setTimeout(() => {
+      console.log('Async operation has ended');
+      event.target.complete();
+    }, 2000);
+  }
+
 
 
 }
