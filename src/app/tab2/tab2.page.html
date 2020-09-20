@@ -1,8 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>
-      Historial de ventas
-    </ion-title>
+    <ion-title> Historial de ventas </ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -12,22 +10,35 @@
       pullingIcon="chevron-down-circle-outline"
       pullingText="Pull to refresh"
       refreshingSpinner="circles"
-      refreshingText="Actualizando...">
+      refreshingText="Actualizando..."
+    >
     </ion-refresher-content>
   </ion-refresher>
   <ion-card *ngFor="let item of datat">
     <ion-card-header>
-      <ion-card-subtitle><strong>Codigo de barra</strong> # {{item.codebar}}<br> <strong>Fecha</strong>
-        {{item.date | date }}</ion-card-subtitle>
+      <ion-card-subtitle
+        ><strong>Codigo de barra</strong> # {{item.codebar}}<br />
+        <strong>Fecha</strong> {{item.date | date }} - {{item.hour }}
+      </ion-card-subtitle>
       <ion-card-title>Venta de servicio</ion-card-title>
     </ion-card-header>
 
     <ion-card-content>
-      <span><b>Vendedor:</b> {{item.seller}}</span><br>
-      <span><b>Cliente: {{item.name }} - {{ item.dni}}</b> </span><br>
-      <span><b>Total:</b> {{item.total}}</span><br>
-
-
+      <span><b>Vendedor:</b> {{item.seller}}</span><br />
+      <span><b>Cliente: {{item.name }} - {{ item.dni}}</b> </span><br />
+      <span><b>Total:</b> {{item.total}}</span><br /><br />
+      <b>Detalle de servicios:</b>
+      <hr style="color: rgb(46, 46, 46);">
+      <ng-container *ngFor="let detail of item.detail">
+        <span><b>Servicio:</b> {{ detail.name }} - Valor: ${{ detail.publicvalue }} <br> Estado: {{ detail.status }} </span><br>
+      </ng-container>
+      <ng-container *ngFor="let plans of item.plans">
+        <div style="border-left: yellow 2px solid; padding-left: 3px;"><b>Combo:</b> {{ plans.name }} - Valor: $ {{ plans.totalvalue }} <br>
+        <span *ngFor="let servicesIndividual of plans.services">
+          Serv. Plan: {{ servicesIndividual.name }} - $ {{ servicesIndividual.publicvalue }} <br> Estado: {{ servicesIndividual.status }}
+        </span>
+      </div><br>
+      </ng-container>
     </ion-card-content>
   </ion-card>
 </ion-content>

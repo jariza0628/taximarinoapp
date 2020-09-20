@@ -77,10 +77,14 @@ export class Tab4Page implements OnInit {
   }
 
   searchByCode() {
+
+    let info;
     if (this.searchDataValue) {
       this._FirebaseServiceService.getByCodebar('sales', this.searchDataValue).subscribe(
-        (data: any) => {
-          let info = data.map(e => {
+        data => {
+          console.log('data', data);
+          
+          info = data.map(e => {
             console.log(e.payload.doc.data());
             this.datas(e.payload.doc.data());
             return {
@@ -93,9 +97,13 @@ export class Tab4Page implements OnInit {
           console.log(err);
         }
       )
+    }else{
+      console.log('No code');
+      
     }
 
   }
+  
   removeItemFromArr(item) {
     let i;
     i = this.result.detail.indexOf(item);

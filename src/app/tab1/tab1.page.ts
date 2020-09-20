@@ -46,8 +46,8 @@ export class Tab1Page implements OnInit {
     this.arraySelectPlan = [];
 
     this.scannedData = [];
-
-
+      debugger
+    this.currentUser = JSON.parse(sessionStorage.getItem('user'));
     this.formData = fb.group({
       name: fb.control(''),
       dni: fb.control(''),
@@ -55,11 +55,11 @@ export class Tab1Page implements OnInit {
       citylife: fb.control(''),
       phone: fb.control(''),
       seller: fb.control('', Validators.required),
-      codebar: fb.control(null, Validators.required),
-      detail: fb.control('', Validators.required),
+      codebar: fb.control(null),
+      detail: fb.control(''),
       dicount: fb.control(0),
       service: fb.control(0),
-      zone: fb.control(null, Validators.required),
+      zone: fb.control(this.currentUser.zone, Validators.required),
     });
     this.totalValue = 0;
     this.total = 0;
@@ -71,6 +71,9 @@ export class Tab1Page implements OnInit {
   }
 
   ngOnInit() {
+    
+  }
+  ionViewWillEnter(){
     this.getData();
     this.getDataServices();
     this.getDataZones();
@@ -232,12 +235,12 @@ export class Tab1Page implements OnInit {
       host: '',
       dicount: '',
       service: [],
-      zone: '',
+      zone: this.currentUser.zone,
       citylife: '',
       phone: ''
     });
     this.scannedData = [];
-    this.pointsale = [];
+    // this.pointsale = [];
     this.arraySelect = [];
     this.totalValue = 0
     this.total = 0;
@@ -247,6 +250,9 @@ export class Tab1Page implements OnInit {
   loadDataUser() {
     this.currentUser = JSON.parse(sessionStorage.getItem('user'));
     console.log('loadDataUser', this.currentUser);
+    this.formData.patchValue({
+      seller: this.currentUser.user,
+    });
   }
 
   calcValue(val) {
@@ -326,7 +332,7 @@ export class Tab1Page implements OnInit {
     this._FirebaseServiceService.getById('service', item).then(
       datas => {
         console.log('datas', datas.data());
-        debugger
+    
         this.ps(datas.data());
       }, err => {
         console.log(err);
@@ -342,7 +348,7 @@ export class Tab1Page implements OnInit {
   removeItemFromArr(item) {
     let i;
     i = this.arraySelect.indexOf(item);
-    debugger
+
     if (i !== -1) {
       this.arraySelect.splice(i, 1);
       this.totalValue = this.totalValue - item.publicvalue;
@@ -389,7 +395,7 @@ export class Tab1Page implements OnInit {
 
   removeItemFromArrPlan(item: any) {
     console.log(item);
-    debugger
+     
     let i;
     i = this.arraySelectPlan.indexOf(item);
 

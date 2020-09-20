@@ -18,12 +18,11 @@ export class Tab2Page implements OnInit {
   }
 
   ngOnInit() {
-    this.datat = [];
-    this.currentUser = JSON.parse(sessionStorage.getItem('user'));
-    this.getSalesByUser(this.currentUser.user);
+    
 
   }
   ionViewWillEnter(){
+    this.datat = [];
     this.currentUser = JSON.parse(sessionStorage.getItem('user'));
     this.getSalesByUser(this.currentUser.user);
   }

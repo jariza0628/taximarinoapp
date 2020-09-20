@@ -96,9 +96,12 @@
       </ng-container>
       <ion-item>
         <ion-label>Zona de venta</ion-label>
+        <ion-input slot="end" style="float: right;pointer-events: none;" type="text" formControlName="zone" name="zone" ></ion-input>
+        <!-- 
         <ion-select placeholder="Select One" formControlName="zone">
           <ion-select-option *ngFor="let item of pointsale" value="{{item.name}}">{{item.name}}</ion-select-option>
         </ion-select>
+        -->
       </ion-item>
       <ion-item-divider>
         <ion-label>
@@ -131,7 +134,7 @@
       </ng-container>
       <br>
       <ion-button color="primary" (click)="resetForm()">Limpiar</ion-button>
-      <ion-button color="dark" type="submit">Guardar</ion-button>
+      <ion-button color="dark" [disabled]="!formData.valid" type="submit">Guardar</ion-button>
       <ion-item>
         <ion-label *ngIf="scannedData.length > 0">Total: {{(totalValue + total) * scannedData.length }} </ion-label>
         <ion-label *ngIf="scannedData.length === 0">Total: {{(totalValue + total) }} </ion-label>
