@@ -4,6 +4,7 @@
 
 export const environment = {
   production: false,
+  /*
   firebaseConfig: {
     apiKey: 'AIzaSyAopyqbc9NmT4rAuQ6_FsJse11FTRzOlUA',
     authDomain: 'dev-taximarino.firebaseapp.com',
@@ -13,8 +14,8 @@ export const environment = {
     messagingSenderId: '352440104332',
     appId: '1:352440104332:web:6eae0ec6468da0acb252a9',
     measurementId: 'G-QHZ72YFG6C'
-  }
-  /* PROD
+  }*/
+  // PROD
   firebaseConfig: {
     apiKey: 'AIzaSyDhp-1ADAPXE6ypuMMGjHHw_PP-ndWoQ8Q',
     authDomain: 'taximarino-98c35.firebaseapp.com',
@@ -23,7 +24,7 @@ export const environment = {
     storageBucket: 'taximarino-98c35.appspot.com',
     messagingSenderId: '4435333264',
     appId: '1:4435333264:web:c1cac4d754eabb21564815'
-  }*/
+  }
 };
 
 /*

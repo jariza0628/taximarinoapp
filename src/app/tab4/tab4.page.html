@@ -87,8 +87,8 @@
 
             <ion-item *ngFor="let item of result.detail" style="position: relative;">
               <ion-label>{{item.name}} - {{item.publicvalue}}</ion-label>
-              <img (click)="removeItemFromArr(item)" src="https://img.icons8.com/plasticine/2x/delete-sign.png"
-                width="20" height="20" style="float: right;">
+              <!-- <img (click)="removeItemFromArr(item)" src="https://img.icons8.com/plasticine/2x/delete-sign.png"
+                width="20" height="20" style="float: right;"> -->
             </ion-item>
             Adicionar
             <ion-item>
@@ -109,13 +109,16 @@
             Combos vendidos
             <ion-item *ngFor="let item of result.plans" style="position: relative;">
               <ion-label>{{item.name}} - {{item.publicvalue}}</ion-label>
-              <img (click)="removeItemFromArrPlan(item)" src="https://img.icons8.com/plasticine/2x/delete-sign.png"
-                width="20" height="20" style="float: right;">
+              <!-- <img (click)="removeItemFromArrPlan(item)" src="https://img.icons8.com/plasticine/2x/delete-sign.png"
+                width="20" height="20" style="float: right;"> -->
             </ion-item>
-            Adicionar:
+            <!-- 
+               Adicionar:
             <ion-select placeholder="Select One" (ionChange)="onChangePlan($event)">
               <ion-select-option *ngFor="let item of plans" value="{{item.id}}">{{item.name}}</ion-select-option>
             </ion-select>
+            -->
+           
           </ion-card-content>
         </ion-card>
       </ion-row>

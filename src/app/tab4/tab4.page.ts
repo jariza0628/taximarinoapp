@@ -36,6 +36,9 @@ export class Tab4Page implements OnInit {
   }
 
   ngOnInit() {
+    this.ionViewWillEnter();
+  }
+  ionViewWillEnter() {
     this.result = {
       name: "",
       detail: [],
@@ -77,7 +80,7 @@ export class Tab4Page implements OnInit {
   }
 
   searchByCode() {
-
+    this.totalAdd = 0;
     let info;
     if (this.searchDataValue) {
       this._FirebaseServiceService.getByCodebar('sales', this.searchDataValue).subscribe(

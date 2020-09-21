@@ -10,7 +10,7 @@ export class Sale {
     dni: any;
     value: any;
     dicount: any;
-    codebar?: any;
+    codebar?: string;
     state: 'Aprovado | Denegado | Cancelada';
     agency?: any;
     detail?: any;

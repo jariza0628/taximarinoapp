@@ -10,7 +10,7 @@ export class Sale {
     date: Date;
     value: any;
     dicount: any;
-    codebar?: any;
+    codebar?: string;
     state: 'Aprovado | Denegado | Cancelada';
     agency: Agency;
     detail: Service[];
