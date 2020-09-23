@@ -17,6 +17,7 @@ export class HomePage implements OnInit {
   user: any;
   password: any;
 
+  sesionOn: boolean;
 
 
 
@@ -29,6 +30,7 @@ export class HomePage implements OnInit {
 
   ngOnInit() {
     this.getAllUsers();
+    
   }
 
 
@@ -44,6 +46,12 @@ export class HomePage implements OnInit {
             ...e.payload.doc.data()
           } as User;
         });
+        if(localStorage.getItem('UserSiosionON')){
+          let data= JSON.parse(localStorage.getItem('UserSiosionON'));
+          this.user = data.user;
+          this.password = data.password;
+          this.login();
+        }
       });
   }
 
@@ -59,6 +67,15 @@ export class HomePage implements OnInit {
     if (!this.password) {
       this.presentAlert('Alerta', 'Digita una clave!');
       return;
+    }
+    if(this.sesionOn === true){
+      if(this.user && this.password){
+        let data = {
+          user: this.user,
+          password: this.password
+        }
+        localStorage.setItem('UserSiosionON', JSON.stringify(data))
+      }
     }
     console.log('data', this.data);
     this.data.forEach(element => {

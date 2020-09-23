@@ -1,16 +1,19 @@
 <ion-content>
   <div class="full">
-    <img src="../../assets/icon-home.png">
-    <img src="../../assets/icon-texto.png">
-    <br>
+    <img src="../../assets/icon-home.png" />
+    <img src="../../assets/icon-texto.png" />
+    <br />
     <ion-list class="ion-padding">
       <ion-item>
         <ion-label>Usuarios</ion-label>
         <ion-select placeholder="Select One" [(ngModel)]="user">
           <ng-container *ngFor="let item of data">
-            <ion-select-option *ngIf="item.type === 'Vendedor'" value="{{item.user}}">{{item.user}}</ion-select-option>
+            <ion-select-option
+              *ngIf="item.type === 'Vendedor'"
+              value="{{item.user}}"
+              >{{item.user}}</ion-select-option
+            >
           </ng-container>
-          
         </ion-select>
       </ion-item>
       <ion-item>
@@ -18,7 +21,14 @@
         <ion-input type="password" [(ngModel)]="password"></ion-input>
       </ion-item>
     </ion-list>
+    
     <ion-button color="dark" (click)="login()">Ingresar</ion-button>
+    <ion-list>
+      <ion-item style="border: none;">
+        <ion-label style="color: crimson;">Mantener sesion iniciada</ion-label>
+        <ion-checkbox [(ngModel)]="sesionOn"></ion-checkbox>
+      </ion-item>
+    </ion-list>
     <!-- 
 
     
@@ -27,7 +37,5 @@
       <ion-input type="text" [(ngModel)]="codemanual" autofocus="true"  (ionInput)='onChangeTime($event.target.value)'></ion-input>
     </ion-item>
     <ion-button color="primary" class="end-position" (click)="scanCode()">Modo Scan</ion-button>
-  -->
-</div>
-
+  --></div>
 </ion-content>
