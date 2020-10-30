@@ -17,6 +17,8 @@ export class Tab3Page {
   }
   colse() {
     sessionStorage.removeItem('user');
+    localStorage.removeItem('UserSiosionON');
+    
     this.router.navigate(['/']);
   }
 

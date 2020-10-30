@@ -23,11 +23,17 @@ export class FirebaseServiceService {
   getById2(entiti, codebar) {
     return this.firestore.collection(entiti).doc(codebar).ref.get();
   }
-  getByCodebar(entiti, data: number) {
+  getByCodebar(entiti, data: String) {
     return this.firestore.collection('sales', ref => ref.where('codebar', '==', data)).snapshotChanges();
   }
   getBySalesByUser(entiti, data) {
     return this.firestore.collection(entiti, ref => ref.where('seller', '==', data)).snapshotChanges();
+  }
+  getSalesByDateAndSeller(entiti, data, data2) {
+    return this.firestore.collection(entiti, ref => ref.where('seller', '==', data).where('date', '==', data2)).snapshotChanges();
+  }
+  getSalesByCodebarAndSeller(entiti, data, data2) {
+    return this.firestore.collection(entiti, ref => ref.where('seller', '==', data).where('codebar', '==', data2)).snapshotChanges();
   }
   getSaleByIdGenerated(entiti?, col?, data?) {
     return this.firestore.collection(entiti, ref => ref.where(col, '==', data)).snapshotChanges();

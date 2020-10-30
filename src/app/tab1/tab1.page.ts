@@ -32,6 +32,8 @@ export class Tab1Page implements OnInit {
   tarjeta: any;
   typepay: any;
 
+  agency: any;
+
   SalesSucces: Array<any>;
   SalesNoSucces: Array<any>;
 
@@ -46,6 +48,8 @@ export class Tab1Page implements OnInit {
     this.arraySelect = [];
     this.arraySelectPlan = [];
 
+    this.agency = [];
+
     this.scannedData = [];
     this.currentUser = JSON.parse(sessionStorage.getItem("user"));
     this.formData = fb.group({
@@ -59,6 +63,8 @@ export class Tab1Page implements OnInit {
       detail: fb.control(""),
       dicount: fb.control(0),
       service: fb.control(0),
+      agency: fb.control(0),
+      vaucher: fb.control(null),
       zone: fb.control(this.currentUser.zone, Validators.required),
     });
     this.totalValue = 0;
@@ -78,6 +84,7 @@ export class Tab1Page implements OnInit {
       // this.presentAlertRadio();
     }, 400);
     this.loadDataUser();
+    this.getAgency();
   }
 
   appendLeadingZeroes(n) {
@@ -163,6 +170,19 @@ export class Tab1Page implements OnInit {
 
   getSalesByCode(code) {
     console.log("entro where");
+  }
+
+  getAgency() {
+    this._FirebaseServiceService.getfirebase("agency").subscribe((data) => {
+      // console.log('dara', data);
+      this.agency = data.map((e) => {
+        console.log(e.payload.doc.data());
+        return {
+          id: e.payload.doc.id,
+          ...e.payload.doc.data(),
+        } as any;
+      });
+    });
   }
 
   onSubmit1(code, saleIdentifier) {
@@ -275,6 +295,8 @@ export class Tab1Page implements OnInit {
       zone: this.currentUser.zone,
       citylife: "",
       phone: "",
+      agency: "",
+      vaucher: "",
     });
     this.scannedData = [];
     // this.pointsale = [];
@@ -401,6 +423,10 @@ export class Tab1Page implements OnInit {
   onChangePlan(deviceValue) {
     console.log(deviceValue.detail.value);
     this.addValueToArraySelectPlan(deviceValue.detail.value);
+    this.formData.setValue({
+      detail: [],
+      service: [],
+    });
   }
   getRecDetPlan(deviceValue: any) {
     console.log(deviceValue);
@@ -422,6 +448,10 @@ export class Tab1Page implements OnInit {
     this.total = this.total + data.totalvalue;
     this.arraySelectPlan.push(data);
     console.log(this.arraySelectPlan);
+    this.formData.setValue({
+      detail: [],
+      service: [],
+    });
   }
 
   removeItemFromArrPlan(item: any) {
