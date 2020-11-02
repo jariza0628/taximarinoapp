@@ -59,6 +59,7 @@ export class Tab1Page implements OnInit {
       detail: fb.control(""),
       dicount: fb.control(0),
       service: fb.control(0),
+      commission: fb.control(0),
       zone: fb.control(this.currentUser.zone, Validators.required),
     });
     this.totalValue = 0;
@@ -222,6 +223,7 @@ export class Tab1Page implements OnInit {
                 tarjeta: 0,
                 typepay: "Efectivo",
                 idGeneralSale: saleIdentifier,
+                
               };
               this.save(body);
               console.log("body", body);
@@ -275,6 +277,7 @@ export class Tab1Page implements OnInit {
       zone: this.currentUser.zone,
       citylife: "",
       phone: "",
+      commission: ""
     });
     this.scannedData = [];
     // this.pointsale = [];

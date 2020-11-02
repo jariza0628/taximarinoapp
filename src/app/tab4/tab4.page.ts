@@ -22,7 +22,7 @@ export class Tab4Page implements OnInit {
   total: any;
   totalAdd: number;
 
-
+  currentUser: any;
   services: any;
   plans: any;
   constructor(
@@ -37,6 +37,7 @@ export class Tab4Page implements OnInit {
 
   ngOnInit() {
     this.ionViewWillEnter();
+    this.currentUser = JSON.parse(sessionStorage.getItem('user'));
   }
   ionViewWillEnter() {
     this.result = {
@@ -170,16 +171,22 @@ export class Tab4Page implements OnInit {
     console.log(this.result);
   }
   sendEditSales() {
-    if (this.totalAdd > 0) {
-      this.presentAlert('Alerta ', 'El usuario debe cancelar un adicional de: $' + this.totalAdd)
+    if(this.currentUser.user === this.result.seller){
+      if (this.totalAdd > 0) {
+        this.presentAlert('Alerta ', 'El usuario debe cancelar un adicional de: $' + this.totalAdd)
+      }
+      if (this.totalAdd < 0) {
+        this.presentAlert('Alerta ', 'Se debe rembolsar al usuario: $' + this.totalAdd)
+      }
+      this.result.total = this.result.total + this.totalAdd;
+      console.log('sendEditSales', this.result);
+      this._FirebaseServiceService.updateFirebase('sales', this.result);
+      this.totalAdd = 0;
+    }else{
+      this.presentAlert('Alerta ', 'No puedes editar la venta de otro vendedor')
+
     }
-    if (this.totalAdd < 0) {
-      this.presentAlert('Alerta ', 'Se debe rembolsar al usuario: $' + this.totalAdd)
-    }
-    this.result.total = this.result.total + this.totalAdd;
-    console.log('sendEditSales', this.result);
-    this._FirebaseServiceService.updateFirebase('sales', this.result);
-    this.totalAdd = 0;
+    
   }
   updateStateService() {
     console.log('Update');
