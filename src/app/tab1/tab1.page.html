@@ -124,7 +124,7 @@
                   <ion-label>{{item.name | titlecase}}</ion-label>
                 </ion-col>
                 <ion-col size="3" style="text-align: left">
-                  <ion-label>${{item.totalvalue}}</ion-label>
+                  <ion-label>${{item.totalvalue | number}}</ion-label>
                 </ion-col>
                 <ion-col size="1">
                   <img
@@ -167,7 +167,7 @@
                   <ion-label>{{item.name | titlecase}}</ion-label>
                 </ion-col>
                 <ion-col size="3" style="text-align: left">
-                  <ion-label>${{item.publicvalue}}</ion-label>
+                  <ion-label>${{item.publicvalue | number}}</ion-label>
                 </ion-col>
                 <ion-col size="1">
                   <img
@@ -194,17 +194,51 @@
           >
         </ion-select>
       </ion-item>
-      
-      <!-- 
+
       <ion-item>
         <ion-label>Medio de Pago</ion-label>
 
-        <ion-select placeholder="Seleccionar" formControlName="zone">
-          <ion-select-option value="Efectivo">Efectivo</ion-select-option>
-          <ion-select-option value="Efectivo">Efectivo</ion-select-option>
+        <ion-select
+          #typePay
+          placeholder="Seleccionar"
+          (ionChange)="onChangePayMethod($event)"
+          formControlName="typepay"
+        >
+          <ion-select-option value="cash" selected>Efectivo</ion-select-option>
+          <ion-select-option value="card">Tarjeta</ion-select-option>
+          <ion-select-option value="credit">Credito</ion-select-option>
+          <ion-select-option value="mixed">Mixto</ion-select-option>
         </ion-select>
       </ion-item>
--->
+      <ng-container *ngIf="typePay.value ==='mixed'">
+        <ion-grid>
+          <ion-row>
+            <ion-col size="6">
+              <ion-item>
+                <ion-label position="floating">Efectivo</ion-label>
+                <ion-input
+                  type="number"
+                  formControlName="efecty"
+                  name="efecty"
+                  placeholder="0"
+                ></ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col size="6">
+              <ion-item>
+                <ion-label position="floating">Tarjeta</ion-label>
+                <ion-input
+                  type="number"
+                  formControlName="tarjeta"
+                  name="tarjeta"
+                  placeholder="0"
+                ></ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ng-container>
+
       <ion-item-divider>
         <ion-label>Escanear codigo de manilla </ion-label>
       </ion-item-divider>
@@ -275,7 +309,7 @@
           >Total: {{(totalValue + total) * scannedData.length }}
         </ion-label>
         <ion-label *ngIf="scannedData.length === 0"
-          >Total: {{(totalValue + total) }}
+          >Total: $ {{(totalValue + total) | number }}
         </ion-label>
       </ion-item>
     </ion-list>

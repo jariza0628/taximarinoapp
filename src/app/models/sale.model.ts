@@ -26,6 +26,8 @@ export class Sale {
   phone?: null;
   service?: null;
   zone?: null;
+  tarjeta?: any;
+  efecty?: any
 }
 export interface GeneralSale {
   clientName?: string;

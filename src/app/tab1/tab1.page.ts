@@ -30,6 +30,7 @@ export class Tab1Page implements OnInit {
 
   efecty: any;
   tarjeta: any;
+  credit: any;
   typepay: any;
 
   agency: any;
@@ -38,7 +39,7 @@ export class Tab1Page implements OnInit {
   SalesNoSucces: Array<any>;
 
   generalSale: GeneralSale = {};
-
+  typePayVal: any;
   constructor(
     private fb: FormBuilder,
     private barcodeScanner: BarcodeScanner,
@@ -66,6 +67,10 @@ export class Tab1Page implements OnInit {
       agency: fb.control(0),
       vaucher: fb.control(null),
       zone: fb.control(this.currentUser.zone, Validators.required),
+      efecty: fb.control(null),
+      tarjeta: fb.control(null),
+      credit: fb.control(null),
+      typepay: fb.control("", Validators.required),
     });
     this.totalValue = 0;
     this.total = 0;
@@ -93,7 +98,10 @@ export class Tab1Page implements OnInit {
     }
     return n;
   }
-
+  onChangePayMethod(val) {
+    console.log("val", val.detail.value);
+    this.typePayVal = val.detail.value;
+  }
   sendNewSales() {
     if (this.arraySelectPlan.length > 0 || this.arraySelect.length > 0) {
       if (this.scannedData.length > 0) {
@@ -229,6 +237,54 @@ export class Tab1Page implements OnInit {
               if (formValue.dicount === null || formValue.dicount === "") {
                 formValue.dicount = 0;
               }
+              // Tipo de pago se guarda segun el tipo de pago 3 campos en la coleccion
+              if(formValue.typepay === "card"){
+                 let total = 0;
+                if (this.scannedData.length > 0) {
+                  total =
+                    (this.totalValue + this.totalValue) *
+                    this.scannedData.length;
+                } else {
+                  total = this.totalValue + this.total;
+                }
+                formValue.tarjeta = total
+                
+              }
+              if(formValue.typepay === "cash"){
+                let total = 0;
+                if (this.scannedData.length > 0) {
+                  total =
+                    (this.totalValue + this.totalValue) *
+                    this.scannedData.length;
+                } else {
+                  total = this.totalValue + this.total;
+                }
+                formValue.efecty = total
+              }
+              if (formValue.typepay === "mixed") {
+                console.log("mixed");
+                let sumValue;
+                let total = 0;
+                sumValue =
+                  parseInt(formValue.efecty) + parseInt(formValue.tarjeta);
+                if (this.scannedData.length > 0) {
+                  total =
+                    (this.totalValue + this.totalValue) *
+                    this.scannedData.length;
+                } else {
+                  total = this.totalValue + this.total;
+                }
+                console.log("mixed", total);
+
+                if (sumValue === total) {
+                } else {
+                  this.presentAlert(
+                    "Alerta!",
+                    "La suma del efectivvo y valor tarjeta no coinciden con el total de venta!"
+                  );
+                  return false;
+                }
+              }
               body = {
                 id: "0",
                 ...formValue,
@@ -238,9 +294,6 @@ export class Tab1Page implements OnInit {
                 hour: hours,
                 total: this.total,
                 state: "Activo",
-                efecty: this.total,
-                tarjeta: 0,
-                typepay: "Efectivo",
                 idGeneralSale: saleIdentifier,
               };
               this.save(body);
@@ -250,7 +303,7 @@ export class Tab1Page implements OnInit {
             } else {
               this.presentAlert(
                 "Campos obligatorios",
-                "Debe indicar un código de barra"
+                "Debe indicar un código de barras"
               );
             }
           } else {
@@ -297,6 +350,10 @@ export class Tab1Page implements OnInit {
       phone: "",
       agency: "",
       vaucher: "",
+      tarjeta: "",
+      efecty: "",
+      credit: "",
+      typepay: "",
     });
     this.scannedData = [];
     // this.pointsale = [];
