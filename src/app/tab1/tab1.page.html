@@ -146,6 +146,8 @@
           formControlName="agency"
           (ionChange)="onChange($event)"
         >
+        <ion-select-option   value="0"
+        >Seleccionar</ion-select-option>
           <ion-select-option *ngFor="let item of agency" value="{{item.name}}"
             >{{item.name | titlecase}}</ion-select-option
           >
@@ -217,7 +219,7 @@
               <ion-label position="stacked">Escanear codigo:</ion-label>
               <ion-input
                 placeholder="0000000000"
-                type="text"
+                type="number"
                 formControlName="codebar"
                 name="codebar"
               ></ion-input>

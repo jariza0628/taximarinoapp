@@ -8,6 +8,7 @@ import { AlertController } from "@ionic/angular";
 import { BarcodeScanner } from "@ionic-native/barcode-scanner/ngx";
 import { async } from "rxjs/internal/scheduler/async";
 import { v4 as uuidv4 } from "uuid";
+import { ToastController } from '@ionic/angular';
 
 @Component({
   selector: "app-tab1",
@@ -32,17 +33,22 @@ export class Tab1Page implements OnInit {
   tarjeta: any;
   typepay: any;
 
+  agency: any;
+
   SalesSucces: Array<any>;
   SalesNoSucces: Array<any>;
 
   generalSale: GeneralSale = {};
 
+  codeRangesRegister: any;
   constructor(
     private fb: FormBuilder,
     private barcodeScanner: BarcodeScanner,
     private _FirebaseServiceService: FirebaseServiceService,
-    public alertController: AlertController
+    public alertController: AlertController,
+    public toastController: ToastController
   ) {
+    this.codeRangesRegister = [];
     this.arraySelect = [];
     this.arraySelectPlan = [];
 
@@ -75,6 +81,7 @@ export class Tab1Page implements OnInit {
     this.getData();
     this.getDataServices();
     this.getDataZones();
+    this.getAgency();
     setTimeout(() => {
       this.loadDataUser();
       // this.presentAlertRadio();
@@ -167,6 +174,19 @@ export class Tab1Page implements OnInit {
     console.log("entro where");
   }
 
+  getAgency() {
+    this._FirebaseServiceService.getfirebase("agency").subscribe((data) => {
+      // console.log('dara', data);
+      this.agency = data.map((e) => {
+        console.log(e.payload.doc.data());
+        return {
+          id: e.payload.doc.id,
+          ...e.payload.doc.data(),
+        } as any;
+      });
+    });
+  }
+
   onSubmit1(code, saleIdentifier) {
     let formValue;
     let body;
@@ -224,7 +244,6 @@ export class Tab1Page implements OnInit {
                 tarjeta: 0,
                 typepay: "Efectivo",
                 idGeneralSale: saleIdentifier,
-                
               };
               this.save(body);
               console.log("body", body);
@@ -278,7 +297,7 @@ export class Tab1Page implements OnInit {
       zone: this.currentUser.zone,
       citylife: "",
       phone: "",
-      commission: ""
+      commission: "",
     });
     this.scannedData = [];
     // this.pointsale = [];
@@ -357,6 +376,17 @@ export class Tab1Page implements OnInit {
   onChange(deviceValue) {
     console.log(deviceValue.detail.value);
     this.addValueToArraySelect(deviceValue.detail.value);
+    if (deviceValue.detail.value === "0") {
+      this.formData.patchValue({
+        name: "",
+        // formControlName2: myValue2 (can be omitted)
+      });
+    } else {
+      this.formData.patchValue({
+        name: deviceValue.detail.value,
+        // formControlName2: myValue2 (can be omitted)
+      });
+    }
   }
 
   getRecDet(deviceValue: any) {
@@ -440,23 +470,53 @@ export class Tab1Page implements OnInit {
     }
   }
 
-  addCodeManula() {
+  
+
+  async addCodeManula() {
     //       let formValue = this._formEntity.value;
     if (this.formData.controls.codebar.value) {
-      let codeDuplicate = false;
-      this.scannedData.forEach((element) => {
-        if (element === this.formData.controls.codebar.value) {
-          codeDuplicate = true;
-        }
-      });
-      if (!codeDuplicate) {
-        this.scannedData.push(this.formData.controls.codebar.value);
-      } else {
-        this.presentAlert(
-          "Alerta",
-          "El codigo que intenta registra ya fue añadido!"
+      await this._FirebaseServiceService
+        .getByCodebar("sales", "" + this.formData.controls.codebar.value)
+        .subscribe(
+          (data) => {
+            console.log("data", data);
+
+            let info = data.map((e) => {
+              console.log(e.payload.doc.data());
+              // this.datas(e.payload.doc.data());
+              let info2 = {
+                id: e.payload.doc.id,
+                ...e.payload.doc.data(),
+              } as any;
+              if (info2) {
+                console.log("Duplicado");
+                this.presentAlert(
+                  "Alerta",
+                  "El codigo que intenta registra ya fue añadido!"
+                );
+              } else {
+                console.log("Sin registrar");
+                let codeDuplicate = false;
+                this.scannedData.forEach((element) => {
+                  if (element === this.formData.controls.codebar.value) {
+                    codeDuplicate = true;
+                  }
+                });
+                if (!codeDuplicate) {
+                  this.scannedData.push(this.formData.controls.codebar.value);
+                } else {
+                  this.presentAlert(
+                    "Alerta",
+                    "El codigo que intenta registra ya fue añadido!"
+                  );
+                }
+              }
+            });
+          },
+          (err) => {
+            console.log(err);
+          }
         );
-      }
     } else {
       this.presentAlert("Alerta", "Digite un codigo de barra!");
       console.log("Code", this.formData.controls.codebar.value);
@@ -562,14 +622,53 @@ export class Tab1Page implements OnInit {
             rango2 = parseInt(data.name2);
             if (rango1 < rango2) {
               for (let index = rango1; index <= rango2; index++) {
+                
                 this.addCodeRonge(index);
               }
+              console.log('Fin add rango');
+              this.verifyCodeRange();
             }
           },
         },
       ],
     });
     await alert.present();
+    console.log('Fin add present');
+  }
+
+  verifyCodeRange(){
+     
+    this.scannedData.forEach(element => {
+      console.log('code',element);
+      this._FirebaseServiceService
+      .getByCodebar("sales", "" + element)
+      .subscribe(
+        (data) => {
+          let info = data.map((e) => {
+            console.log(e.payload.doc.data());
+            // this.datas(e.payload.doc.data());
+            let info2 = {
+              id: e.payload.doc.id,
+              ...e.payload.doc.data(),
+            } as any;
+            if (info2) {
+               console.log('info2, quitar cod', element);
+               let i = this.scannedData.indexOf( element );
+               this.scannedData.splice( i, 1 );
+               this.presentToast('El código: ' + element + ' y sera omitido en el generar consecutivo!');
+            } else {
+              console.log('Cod no registra');
+
+            }
+          });
+        },
+        err =>{
+          console.log(err);
+          
+        }
+      )
+      
+    });
   }
   async presentAlertRadio() {
     console.log("alert");
@@ -651,6 +750,14 @@ export class Tab1Page implements OnInit {
     });
 
     await alert.present();
+  }
+
+  async presentToast(msj) {
+    const toast = await this.toastController.create({
+      message: msj,
+      duration: 2000
+    });
+    toast.present();
   }
 
   doRefresh(event) {
