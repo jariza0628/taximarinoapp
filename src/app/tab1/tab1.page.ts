@@ -291,7 +291,6 @@ export class Tab1Page implements OnInit {
                  }
                }
               body = {
-                id: "0",
                 ...formValue,
                 plans: this.arraySelectPlan,
                 detail: this.arraySelect,
@@ -299,9 +298,6 @@ export class Tab1Page implements OnInit {
                 hour: hours,
                 total: this.total,
                 state: "Activo",
-                efecty: this.total,
-                tarjeta: 0,
-                typepay: "Efectivo",
                 idGeneralSale: saleIdentifier,
               };
               this.save(body);
