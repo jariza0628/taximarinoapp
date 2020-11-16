@@ -352,7 +352,12 @@ export class Tab1Page implements OnInit {
       zone: this.currentUser.zone,
       citylife: "",
       phone: "",
-      commission: "",
+      agency: "",
+      vaucher: "",
+      tarjeta: "",
+      efecty: "",
+      credit: "",
+      typepay: "",
     });
     this.scannedData = [];
     // this.pointsale = [];
