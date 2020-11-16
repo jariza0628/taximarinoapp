@@ -67,6 +67,7 @@ export class Tab1Page implements OnInit {
       dicount: fb.control(0),
       service: fb.control(0),
       agency: fb.control(0),
+      vaucher: fb.control(null),
       commission: fb.control(0),
       zone: fb.control(this.currentUser.zone, Validators.required),
       efecty: fb.control(null),
@@ -120,7 +121,7 @@ export class Tab1Page implements OnInit {
           this.onSubmit1(element, saleIdentifier);
           console.log("element", element);
         });
-
+/*
         setTimeout(() => {
           // somecode
           if (this.SalesNoSucces.length > 0) {
@@ -160,6 +161,7 @@ export class Tab1Page implements OnInit {
             );
           }
         }, 600);
+        */
         this.scannedData = [];
       } else {
         this.presentAlert(
@@ -322,7 +324,12 @@ export class Tab1Page implements OnInit {
   async save(body) {
     console.log("save body", body);
     if (body) {
-      this._FirebaseServiceService.createFirebase("sales", body);
+      this._FirebaseServiceService.createFirebase("sales", body).then(
+        data => {
+          console.log('then data', data);
+          this.presentToast('Ultimo consecutivo creado: ' + body.codebar + '.');
+        }
+      )
     } else {
       console.log("err send body");
     }
@@ -335,7 +342,7 @@ export class Tab1Page implements OnInit {
       this.SalesNoSucces = [];
       this.SalesSucces = [];
 
-      // this.resetForm();
+      this.resetForm();
     }, 1000);
   }
 
@@ -535,6 +542,7 @@ export class Tab1Page implements OnInit {
   async addCodeManula() {
     //       let formValue = this._formEntity.value;
     if (this.formData.controls.codebar.value) {
+      /*
       await this._FirebaseServiceService
         .getByCodebar("sales", "" + this.formData.controls.codebar.value)
         .subscribe(
@@ -550,10 +558,7 @@ export class Tab1Page implements OnInit {
               } as any;
               if (info2) {
                 console.log("Duplicado");
-                this.presentAlert(
-                  "Alerta",
-                  "El codigo que intenta registra ya fue añadido!"
-                );
+                
               } else {
                 console.log("Sin registrar");
              
@@ -563,7 +568,7 @@ export class Tab1Page implements OnInit {
           (err) => {
             console.log(err);
           }
-        );
+        );*/
         let codeDuplicate = false;
         this.scannedData.forEach((element) => {
           if (element === this.formData.controls.codebar.value) {
@@ -710,11 +715,11 @@ export class Tab1Page implements OnInit {
           let info = data.map((e) => {
             console.log(e.payload.doc.data());
             // this.datas(e.payload.doc.data());
-            let info2 = {
+            let info22 = {
               id: e.payload.doc.id,
               ...e.payload.doc.data(),
             } as any;
-            if (info2) {
+            if (info22) {
                console.log('info2, quitar cod', element);
                let i = this.scannedData.indexOf( element );
                this.scannedData.splice( i, 1 );
@@ -818,7 +823,7 @@ export class Tab1Page implements OnInit {
   async presentToast(msj) {
     const toast = await this.toastController.create({
       message: msj,
-      duration: 2000
+      duration: 5000
     });
     toast.present();
   }
@@ -836,6 +841,6 @@ export class Tab1Page implements OnInit {
     setTimeout(() => {
       console.log("Async operation has ended");
       event.target.complete();
-    }, 3500);
+    }, 2000);
   }
 }
