@@ -59,6 +59,7 @@ export class Tab1Page implements OnInit {
       detail: fb.control(""),
       dicount: fb.control(0),
       service: fb.control(0),
+      agency: fb.control(0),
       commission: fb.control(0),
       zone: fb.control(this.currentUser.zone, Validators.required),
     });

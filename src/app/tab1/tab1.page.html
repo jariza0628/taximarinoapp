@@ -139,6 +139,18 @@
           >
         </ion-select>
       </ion-item>
+      <ion-item>
+        <ion-label>Seleccionar Agencia</ion-label>
+        <ion-select
+          placeholder="Seleccionar"
+          formControlName="agency"
+          (ionChange)="onChange($event)"
+        >
+          <ion-select-option *ngFor="let item of agency" value="{{item.name}}"
+            >{{item.name | titlecase}}</ion-select-option
+          >
+        </ion-select>
+      </ion-item>
       <!-- @@@@@@@@@@@@@@@@@@@@@@@@@ -->
       <ng-container *ngIf="arraySelect && arraySelect.length > 0">
         <ion-card>
