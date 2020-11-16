@@ -365,6 +365,7 @@ export class Tab1Page implements OnInit {
       efecty: "",
       credit: "",
       typepay: "",
+      commission:"",
     });
     this.scannedData = [];
     // this.pointsale = [];
