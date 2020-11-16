@@ -32,6 +32,7 @@ export class Tab1Page implements OnInit {
   efecty: any;
   tarjeta: any;
   typepay: any;
+  typePayVal: any;
 
   agency: any;
 
@@ -68,6 +69,10 @@ export class Tab1Page implements OnInit {
       agency: fb.control(0),
       commission: fb.control(0),
       zone: fb.control(this.currentUser.zone, Validators.required),
+      efecty: fb.control(null),
+      tarjeta: fb.control(null),
+      credit: fb.control(null),
+      typepay: fb.control("", Validators.required),
     });
     this.totalValue = 0;
     this.total = 0;
@@ -187,6 +192,12 @@ export class Tab1Page implements OnInit {
     });
   }
 
+  onChangePayMethod(val) {
+    console.log("val", val.detail.value);
+    this.typePayVal = val.detail.value;
+  }
+
+
   onSubmit1(code, saleIdentifier) {
     let formValue;
     let body;
@@ -231,6 +242,54 @@ export class Tab1Page implements OnInit {
               if (formValue.dicount === null || formValue.dicount === "") {
                 formValue.dicount = 0;
               }
+                // Tipo de pago se guarda segun el tipo de pago 3 campos en la coleccion
+                if(formValue.typepay === "card"){
+                  let total = 0;
+                 if (this.scannedData.length > 0) {
+                   total =
+                     (this.totalValue + this.totalValue) *
+                     this.scannedData.length;
+                 } else {
+                   total = this.totalValue + this.total;
+                 }
+                 formValue.tarjeta = total
+                 
+               }
+               if(formValue.typepay === "cash"){
+                 let total = 0;
+                 if (this.scannedData.length > 0) {
+                   total =
+                     (this.totalValue + this.totalValue) *
+                     this.scannedData.length;
+                 } else {
+                   total = this.totalValue + this.total;
+                 }
+                 formValue.efecty = total
+               }
+               if (formValue.typepay === "mixed") {
+                 console.log("mixed");
+                 let sumValue;
+                 let total = 0;
+                 sumValue =
+                   parseInt(formValue.efecty) + parseInt(formValue.tarjeta);
+                 if (this.scannedData.length > 0) {
+                   total =
+                     (this.totalValue + this.totalValue) *
+                     this.scannedData.length;
+                 } else {
+                   total = this.totalValue + this.total;
+                 }
+                 console.log("mixed", total);
+ 
+                 if (sumValue === total) {
+                 } else {
+                   this.presentAlert(
+                     "Alerta!",
+                     "La suma del efectivvo y valor tarjeta no coinciden con el total de venta!"
+                   );
+                   return false;
+                 }
+               }
               body = {
                 id: "0",
                 ...formValue,
@@ -496,20 +555,7 @@ export class Tab1Page implements OnInit {
                 );
               } else {
                 console.log("Sin registrar");
-                let codeDuplicate = false;
-                this.scannedData.forEach((element) => {
-                  if (element === this.formData.controls.codebar.value) {
-                    codeDuplicate = true;
-                  }
-                });
-                if (!codeDuplicate) {
-                  this.scannedData.push(this.formData.controls.codebar.value);
-                } else {
-                  this.presentAlert(
-                    "Alerta",
-                    "El codigo que intenta registra ya fue añadido!"
-                  );
-                }
+             
               }
             });
           },
@@ -517,6 +563,21 @@ export class Tab1Page implements OnInit {
             console.log(err);
           }
         );
+        let codeDuplicate = false;
+        this.scannedData.forEach((element) => {
+          if (element === this.formData.controls.codebar.value) {
+            codeDuplicate = true;
+          }
+        });
+        if (!codeDuplicate) {
+          this.scannedData.push(this.formData.controls.codebar.value);
+          this.verifyCodeRange();
+        } else {
+          this.presentAlert(
+            "Alerta",
+            "El codigo que intenta registra ya fue añadido!"
+          );
+        }
     } else {
       this.presentAlert("Alerta", "Digite un codigo de barra!");
       console.log("Code", this.formData.controls.codebar.value);
@@ -572,6 +633,7 @@ export class Tab1Page implements OnInit {
         });
         if (!codeDuplicate) {
           this.scannedData.push(barcodeData.text);
+          this.verifyCodeRange();
         } else {
           this.presentAlert(
             "Alerta",
@@ -773,6 +835,6 @@ export class Tab1Page implements OnInit {
     setTimeout(() => {
       console.log("Async operation has ended");
       event.target.complete();
-    }, 2000);
+    }, 3500);
   }
 }
