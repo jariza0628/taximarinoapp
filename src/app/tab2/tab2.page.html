@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title (click)="logData()"> Historial de ventas </ion-title>
+    <ion-title> Historial de ventas </ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -14,6 +14,46 @@
     >
     </ion-refresher-content>
   </ion-refresher>
+  <ion-grid>
+    <form>
+      <small>Busqueda por fecha</small>
+      <ion-row>
+        <ion-col size="6">
+          <ion-item>
+            <ion-input
+              type="date"
+              [(ngModel)]="date"
+              [ngModelOptions]="{standalone: true}"
+            ></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size="6" style="text-align: center">
+          <ion-button color="primary" (click)="submit()">Buscar</ion-button>
+        </ion-col>
+      </ion-row>
+      <!-- Buscr 2 -->
+      <small>Busqueda por codigo</small>
+      <ion-row>
+        <ion-col size="6">
+          <ion-item>
+            <ion-input
+              placeholder="00000000"
+              type="number"
+              [(ngModel)]="codeunic"
+              [ngModelOptions]="{standalone: true}"
+            ></ion-input>
+          </ion-item>
+        </ion-col>
+        <ion-col size="6" style="text-align: center">
+          <ion-button color="primary" (click)="submitCodeunit()"
+            >Buscar</ion-button>
+        </ion-col>
+      </ion-row>
+    </form>
+    <ion-row>
+      <span>Numero de manillas mostradas: {{ datat.length }}</span>
+    </ion-row>
+  </ion-grid>
   <ion-card *ngFor="let item of datat">
     <ion-card-header>
       <ion-card-subtitle
@@ -26,18 +66,27 @@
     <ion-card-content>
       <span><b>Vendedor:</b> {{item.seller}}</span><br />
       <span><b>Cliente: {{item.name }} - {{ item.dni}}</b> </span><br />
-      <span><b>Total:</b> {{item.total}}</span><br /><br />
+      <!-- <span><b>Total:</b> {{item.total}}</span><br /><br /> -->
       <b>Detalle de servicios:</b>
-      <hr style="color: rgb(46, 46, 46);">
+      <hr style="color: rgb(46, 46, 46)" />
       <ng-container *ngFor="let detail of item.detail">
-        <span><b>Servicio:</b> {{ detail.name }} - Valor: ${{ detail.publicvalue }} <br> Estado: {{ detail.status }} </span><br>
+        <span
+          ><b>Servicio:</b> {{ detail.name }} - Valor: ${{ detail.publicvalue }}
+          <br />
+          Estado: {{ detail.status }} </span
+        ><br />
       </ng-container>
       <ng-container *ngFor="let plans of item.plans">
-        <div style="border-left: yellow 2px solid; padding-left: 3px;"><b>Combo:</b> {{ plans.name }} - Valor: $ {{ plans.totalvalue }} <br>
-        <span *ngFor="let servicesIndividual of plans.services">
-          Serv. Plan: {{ servicesIndividual.name }} - $ {{ servicesIndividual.publicvalue }} <br> Estado: {{ servicesIndividual.status }}
-        </span>
-      </div><br>
+        <div style="border-left: yellow 2px solid; padding-left: 3px">
+          <b>Combo:</b> {{ plans.name }} - Valor: $ {{ plans.totalvalue }}
+          <br />
+          <span *ngFor="let servicesIndividual of plans.services">
+            Serv. Plan: {{ servicesIndividual.name }} - $ {{
+            servicesIndividual.publicvalue }} <br />
+            Estado: {{ servicesIndividual.status }}
+          </span>
+        </div>
+        <br />
       </ng-container>
     </ion-card-content>
   </ion-card>
