@@ -29,6 +29,9 @@ export class FirebaseServiceService {
   getBySalesByUser(entiti, data) {
     return this.firestore.collection(entiti, ref => ref.where('seller', '==', data)).snapshotChanges();
   }
+  getSalesByDateAndSeller(entiti, data, data2) {
+    return this.firestore.collection(entiti, ref => ref.where('seller', '==', data).where('date', '==', data2)).snapshotChanges();
+  }
   getSaleByIdGenerated(entiti?, col?, data?) {
     return this.firestore.collection(entiti, ref => ref.where(col, '==', data)).snapshotChanges();
   }
