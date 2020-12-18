@@ -8,4 +8,6 @@ export class Plan {
     discount?: any;
     agency?: any;
     services: Service[];
+    code?: string;
+    comissionVal?: boolean;
 }

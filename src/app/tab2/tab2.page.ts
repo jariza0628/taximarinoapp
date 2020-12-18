@@ -32,17 +32,18 @@ export class Tab2Page implements OnInit {
 
 
   getSalesByUser(userName) {
+    this.datat = [];
     console.log('entro where');
     this._FirebaseServiceService.getBySalesByUser('sales', userName).subscribe(
       data => {
         // console.log('dara', data);
         this.data = data.map(e => {
-          console.log(e.payload.doc.data());
+          console.log('fire', e.payload.doc.data());
           this.datas(e.payload.doc.data());
           return {
             id: e.payload.doc.id,
             ...e.payload.doc.data()
-          } as Sale;
+          } as any;
         });
       });
     console.log('data', this.data);
@@ -51,6 +52,11 @@ export class Tab2Page implements OnInit {
   datas(data) {
     console.log('datassss', data);
     this.datat.push(data);
+  }
+  logData(){
+    console.log('datat', this.datat);
+    console.log('dara', this.data);
+    
   }
   doRefresh(event) {
     this.datat = [];

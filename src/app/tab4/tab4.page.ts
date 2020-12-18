@@ -52,7 +52,8 @@ export class Tab4Page implements OnInit {
       value: null,
       agency: null,
       citylife: null,
-      codebar: null
+      codebar: null,
+      comsions: null
     }
     this.getDataServices();
     this.getPlans();
@@ -267,7 +268,8 @@ export class Tab4Page implements OnInit {
       value: null,
       agency: null,
       citylife: null,
-      codebar: null
+      codebar: null,
+      comsions: null
     }
     this.totalAdd = 0;
   }

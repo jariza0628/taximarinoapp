@@ -80,7 +80,7 @@
           </ion-col>
         </ion-row>
         <ion-row>
-          <ion-col size="12">
+          <ion-col size="5">
             <ion-item>
               <ion-label position="floating">Vaucher</ion-label>
               <ion-input
@@ -90,24 +90,49 @@
               ></ion-input>
             </ion-item>
           </ion-col>
+          <ion-col size="7">
+            <ion-item>
+              <ion-label>Comisionista</ion-label>
+              <ion-select
+                placeholder="Seleccionar"
+                formControlName="comsions"
+               >
+                <ion-select-option *ngFor="let item of comsions" value="{{item.id}}"
+                  >{{item.name | titlecase}}</ion-select-option
+                >
+              </ion-select>
+            </ion-item>
+          </ion-col>
         </ion-row>
       </ion-grid>
 
       <ion-item-divider>
         <ion-label> Servicios a vender </ion-label>
       </ion-item-divider>
-      <ion-item>
-        <ion-label>Combo o plan</ion-label>
-        <ion-select
-          placeholder="Seleccionar"
-          formControlName="detail"
-          (ionChange)="onChangePlan($event)"
-        >
-          <ion-select-option *ngFor="let item of data" value="{{item.id}}"
-            >{{item.name | titlecase}}</ion-select-option
-          >
-        </ion-select>
-      </ion-item>
+       <!-- PLANES -->
+       <ion-grid >
+        <ion-row>
+          <ion-col size="9">
+            <ion-item>
+              <ion-label>Combo o plan</ion-label>
+              <ion-select
+                placeholder="Seleccionar"
+                formControlName="detail"
+                (ionChange)="onChangePlan($event)"
+              >
+                <ion-select-option *ngFor="let item of data" value="{{item.id}}"
+                  >{{item.name | titlecase}}</ion-select-option
+                >
+              </ion-select>
+            </ion-item>
+          </ion-col>
+          <ion-col size="3">
+            <ion-button color="success" (click)="presentAlertFindCodePLan()">COD</ion-button>
+
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    
       <!-- ************************ -->
       <ng-container *ngIf="arraySelectPlan && arraySelectPlan.length > 0">
         <ion-card>
@@ -119,6 +144,7 @@
           <ion-card-content>
             <ion-grid>
               <ion-row *ngFor="let item of arraySelectPlan">
+               
                 <ion-col size="8" style="text-align: left">
                   <ion-label>{{item.name | titlecase}}</ion-label>
                 </ion-col>
@@ -138,19 +164,30 @@
           </ion-card-content>
         </ion-card>
       </ng-container>
+      <!-- SERVICIO INDIVIDUAL -->
+      <ion-grid >
+        <ion-row>
+          <ion-col size="9">
+            <ion-item>
+              <ion-label>Servicios individuales</ion-label>
+              <ion-select
+                placeholder="Seleccionar"
+                formControlName="service"
+                (ionChange)="onChange($event)"
+              >
+                <ion-select-option *ngFor="let item of services" value="{{item.id}}"
+                  >{{item.name | titlecase}}</ion-select-option
+                >
+              </ion-select>
+            </ion-item>
+          </ion-col>
+          <ion-col size="3">
+            <ion-button color="warning" (click)="presentAlertFindCode()">COD</ion-button>
 
-      <ion-item>
-        <ion-label>Servicios individuales</ion-label>
-        <ion-select
-          placeholder="Seleccionar"
-          formControlName="service"
-          (ionChange)="onChange($event)"
-        >
-          <ion-select-option *ngFor="let item of services" value="{{item.id}}"
-            >{{item.name | titlecase}}</ion-select-option
-          >
-        </ion-select>
-      </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+      <!-- AGENCIA -->
       <ion-item>
         <ion-label>Seleccionar Agencia</ion-label>
         <ion-select
@@ -218,8 +255,11 @@
 
           <ion-card-content>
             <ion-grid>
-              <ion-row *ngFor="let item of arraySelect">
-                <ion-col size="8" style="text-align: left">
+              <ion-row *ngFor="let item of arraySelect; let i = index">
+                <ion-col size="2" style="text-align: left">
+                  <input type="checkbox" [(ngModel)]="item.comissionVal" [ngModelOptions]="{standalone: true}">
+                 </ion-col>
+                <ion-col size="6" style="text-align: left">
                   <ion-label>{{item.name | titlecase}}</ion-label>
                 </ion-col>
                 <ion-col size="3" style="text-align: left">

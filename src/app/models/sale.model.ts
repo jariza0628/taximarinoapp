@@ -17,7 +17,8 @@ export class Sale {
     plans?: any;
     seller: any;
     citylife?: any;
-    total?:any 
+    total?:any;
+    comsions?: any
 }
 export interface GeneralSale {
     clientName?: string;

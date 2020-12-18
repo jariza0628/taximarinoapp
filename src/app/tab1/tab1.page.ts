@@ -17,13 +17,15 @@ import { ToastController } from '@ionic/angular';
 })
 export class Tab1Page implements OnInit {
   formData: FormGroup;
-  data: any;
-  services: any;
+  data: Plan[];
+  services: Service[];
   pointsale: any;
   total: any;
-  arraySelect: any;
-  arraySelectPlan: any;
+  arraySelect: Service[];
+  arraySelectPlan: Plan[];
   public totalValue: number;
+
+  comsions: any;
 
   scannedData: any;
 
@@ -74,6 +76,7 @@ export class Tab1Page implements OnInit {
       tarjeta: fb.control(null),
       credit: fb.control(null),
       typepay: fb.control("", Validators.required),
+      comsions: fb.control(null),
     });
     this.totalValue = 0;
     this.total = 0;
@@ -88,6 +91,7 @@ export class Tab1Page implements OnInit {
     this.getDataServices();
     this.getDataZones();
     this.getAgency();
+    this.getComision();
     setTimeout(() => {
       this.loadDataUser();
       // this.presentAlertRadio();
@@ -365,7 +369,8 @@ export class Tab1Page implements OnInit {
       efecty: "",
       credit: "",
       typepay: "",
-      commission:"",
+      comsions:"",
+      commission: ""
     });
     this.scannedData = [];
     // this.pointsale = [];
@@ -440,21 +445,36 @@ export class Tab1Page implements OnInit {
       });
     });
   }
-
+  // comsions
+  getComision() {
+    this._FirebaseServiceService.getfirebase("commissions").subscribe((data) => {
+      // console.log('dara', data);
+      this.comsions = data.map((e) => {
+        console.log("commissions", e.payload.doc.data());
+        return {
+          id: e.payload.doc.id,
+          ...e.payload.doc.data(),
+        } as any;
+      });
+    });
+  }
   onChange(deviceValue) {
-    console.log(deviceValue.detail.value);
-    this.addValueToArraySelect(deviceValue.detail.value);
-    if (deviceValue.detail.value === "0") {
-      this.formData.patchValue({
-        name: "",
-        // formControlName2: myValue2 (can be omitted)
-      });
-    } else {
-      this.formData.patchValue({
-        name: deviceValue.detail.value,
-        // formControlName2: myValue2 (can be omitted)
-      });
+    if(deviceValue.detail.value.length > 0){
+      console.log(deviceValue.detail.value);
+      this.addValueToArraySelect(deviceValue.detail.value);
+      if (deviceValue.detail.value === "0") {
+        this.formData.patchValue({
+          name: "",
+          // formControlName2: myValue2 (can be omitted)
+        });
+      } else {
+        this.formData.patchValue({
+          name: deviceValue.detail.value,
+          // formControlName2: myValue2 (can be omitted)
+        });
+      }
     }
+   
   }
 
   getRecDet(deviceValue: any) {
@@ -843,5 +863,99 @@ export class Tab1Page implements OnInit {
       console.log("Async operation has ended");
       event.target.complete();
     }, 2000);
+  }
+  // Busqueda de servicio por codigo
+  async presentAlertFindCode() {
+    let find = false;
+     const alert = await this.alertController.create({
+      cssClass: "my-custom-class",
+      header: "Indique un código!",
+      inputs: [
+        {
+          name: "name1",
+          type: "number",
+          placeholder: "210",
+          min: -0,
+          max:999
+        },
+        
+      ],
+      buttons: [
+        {
+          text: "Cancelar",
+          role: "cancel",
+          cssClass: "secondary",
+          handler: () => {
+            console.log("Confirm Cancel: blah");
+          },
+        },
+        {
+          text: "Buscar y añadir",
+          handler: (data) => {
+            console.log("Confirm Okay", data.name1);
+            // Buscar servicio individual por cod
+            this.services.forEach(element => {
+              if(element.code === data.name1){
+                this.addValueToArraySelect(element.id);
+                find = true;
+              }
+              
+            });
+            if(!find){
+              this.presentAlert('Alerta', 'No se encontraro resultado para el código: ' + data.name1);
+            } 
+          },
+        },
+      ],
+    });
+    await alert.present();
+    console.log('Fin add present');
+  }
+  // Busqueda de PLAN por codigo
+  async presentAlertFindCodePLan() {
+    let find = false;
+     const alert = await this.alertController.create({
+      cssClass: "my-custom-class",
+      header: "Indique un código!",
+      inputs: [
+        {
+          name: "name1",
+          type: "number",
+          placeholder: "810",
+          min: -0,
+          max:999
+        },
+        
+      ],
+      buttons: [
+        {
+          text: "Cancelar",
+          role: "cancel",
+          cssClass: "secondary",
+          handler: () => {
+            console.log("Confirm Cancel: blah");
+          },
+        },
+        {
+          text: "Buscar y añadir",
+          handler: (data) => {
+            console.log("Confirm Okay", data.name1);
+            // Buscar servicio individual por cod
+            this.data.forEach(element => {
+              if(element.code === data.name1){
+                this.addValueToArraySelectPlan(element.id);
+                 find = true;
+              }
+              
+            });
+            if(!find){
+              this.presentAlert('Alerta', 'No se encontraro resultado para el código: ' + data.name1);
+            } 
+          },
+        },
+      ],
+    });
+    await alert.present();
+    console.log('Fin add present');
   }
 }
