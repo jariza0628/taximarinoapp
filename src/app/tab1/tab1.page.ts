@@ -8,7 +8,7 @@ import { AlertController } from "@ionic/angular";
 import { BarcodeScanner } from "@ionic-native/barcode-scanner/ngx";
 import { async } from "rxjs/internal/scheduler/async";
 import { v4 as uuidv4 } from "uuid";
-import { ToastController } from '@ionic/angular';
+import { ToastController } from "@ionic/angular";
 
 @Component({
   selector: "app-tab1",
@@ -110,6 +110,13 @@ export class Tab1Page implements OnInit {
     if (this.arraySelectPlan.length > 0 || this.arraySelect.length > 0) {
       if (this.scannedData.length > 0) {
         const saleIdentifier = uuidv4();
+        debugger
+        if(this.formData.value.typepay === 'credit'){
+          if(this.formData.value.vaucher === null || this.formData.value.vaucher === '' ||  this.formData.value.name === null ||  this.formData.value.name === ''){
+            this.presentAlert('Campos Obligatorioas','Debes indicar cliente y vaucher!');
+            return false;
+          }
+        }
 
         this.generalSale = {
           ...this.generalSale,
@@ -125,7 +132,7 @@ export class Tab1Page implements OnInit {
           this.onSubmit1(element, saleIdentifier);
           console.log("element", element);
         });
-/*
+        /*
         setTimeout(() => {
           // somecode
           if (this.SalesNoSucces.length > 0) {
@@ -203,7 +210,6 @@ export class Tab1Page implements OnInit {
     this.typePayVal = val.detail.value;
   }
 
-
   onSubmit1(code, saleIdentifier) {
     let formValue;
     let body;
@@ -248,54 +254,53 @@ export class Tab1Page implements OnInit {
               if (formValue.dicount === null || formValue.dicount === "") {
                 formValue.dicount = 0;
               }
-                // Tipo de pago se guarda segun el tipo de pago 3 campos en la coleccion
-                if(formValue.typepay === "card"){
-                  let total = 0;
-                 if (this.scannedData.length > 0) {
-                   total =
-                     (this.totalValue + this.totalValue) *
-                     this.scannedData.length;
-                 } else {
-                   total = this.totalValue + this.total;
-                 }
-                 formValue.tarjeta = total
-                 
-               }
-               if(formValue.typepay === "cash"){
-                 let total = 0;
-                 if (this.scannedData.length > 0) {
-                   total =
-                     (this.totalValue + this.totalValue) *
-                     this.scannedData.length;
-                 } else {
-                   total = this.totalValue + this.total;
-                 }
-                 formValue.efecty = total
-               }
-               if (formValue.typepay === "mixed") {
-                 console.log("mixed");
-                 let sumValue;
-                 let total = 0;
-                 sumValue =
-                   parseInt(formValue.efecty) + parseInt(formValue.tarjeta);
-                 if (this.scannedData.length > 0) {
-                   total =
-                     (this.totalValue + this.totalValue) *
-                     this.scannedData.length;
-                 } else {
-                   total = this.totalValue + this.total;
-                 }
-                 console.log("mixed", total);
- 
-                 if (sumValue === total) {
-                 } else {
-                   this.presentAlert(
-                     "Alerta!",
-                     "La suma del efectivvo y valor tarjeta no coinciden con el total de venta!"
-                   );
-                   return false;
-                 }
-               }
+              // Tipo de pago se guarda segun el tipo de pago 3 campos en la coleccion
+              if (formValue.typepay === "card") {
+                let total = 0;
+                if (this.scannedData.length > 0) {
+                  total =
+                    (this.totalValue + this.totalValue) *
+                    this.scannedData.length;
+                } else {
+                  total = this.totalValue + this.total;
+                }
+                formValue.tarjeta = total;
+              }
+              if (formValue.typepay === "cash") {
+                let total = 0;
+                if (this.scannedData.length > 0) {
+                  total =
+                    (this.totalValue + this.totalValue) *
+                    this.scannedData.length;
+                } else {
+                  total = this.totalValue + this.total;
+                }
+                formValue.efecty = total;
+              }
+              if (formValue.typepay === "mixed") {
+                console.log("mixed");
+                let sumValue;
+                let total = 0;
+                sumValue =
+                  parseInt(formValue.efecty) + parseInt(formValue.tarjeta);
+                if (this.scannedData.length > 0) {
+                  total =
+                    (this.totalValue + this.totalValue) *
+                    this.scannedData.length;
+                } else {
+                  total = this.totalValue + this.total;
+                }
+                console.log("mixed", total);
+
+                if (sumValue === total) {
+                } else {
+                  this.presentAlert(
+                    "Alerta!",
+                    "La suma del efectivvo y valor tarjeta no coinciden con el total de venta!"
+                  );
+                  return false;
+                }
+              }
               body = {
                 ...formValue,
                 plans: this.arraySelectPlan,
@@ -328,12 +333,12 @@ export class Tab1Page implements OnInit {
   async save(body) {
     console.log("save body", body);
     if (body) {
-      this._FirebaseServiceService.createFirebase("sales", body).then(
-        data => {
-          console.log('then data', data);
-          this.presentToast('Ultimo consecutivo creado: ' + body.codebar + '.');
-        }
-      )
+      this._FirebaseServiceService
+        .createFirebase("sales", body)
+        .then((data) => {
+          console.log("then data", data);
+          this.presentToast("Ultimo consecutivo creado: " + body.codebar + ".");
+        });
     } else {
       console.log("err send body");
     }
@@ -369,8 +374,8 @@ export class Tab1Page implements OnInit {
       efecty: "",
       credit: "",
       typepay: "",
-      comsions:"",
-      commission: ""
+      comsions: "",
+      commission: "",
     });
     this.scannedData = [];
     // this.pointsale = [];
@@ -447,21 +452,31 @@ export class Tab1Page implements OnInit {
   }
   // comsions
   getComision() {
-    this._FirebaseServiceService.getfirebase("commissions").subscribe((data) => {
-      // console.log('dara', data);
-      this.comsions = data.map((e) => {
-        console.log("commissions", e.payload.doc.data());
-        return {
-          id: e.payload.doc.id,
-          ...e.payload.doc.data(),
-        } as any;
+    this._FirebaseServiceService
+      .getfirebase("commissions")
+      .subscribe((data) => {
+        // console.log('dara', data);
+        this.comsions = data.map((e) => {
+          console.log("commissions", e.payload.doc.data());
+          return {
+            id: e.payload.doc.id,
+            ...e.payload.doc.data(),
+          } as any;
+        });
       });
-    });
   }
   onChange(deviceValue) {
-    if(deviceValue.detail.value.length > 0){
+    if (deviceValue.detail.value.length > 0) {
       console.log(deviceValue.detail.value);
       this.addValueToArraySelect(deviceValue.detail.value);
+   
+    }
+  }
+
+  onChangeAgency(deviceValue) {
+    if (deviceValue.detail.value.length > 0) {
+      console.log(deviceValue.detail.value);
+      // this.addValueToArraySelect(deviceValue.detail.value);
       if (deviceValue.detail.value === "0") {
         this.formData.patchValue({
           name: "",
@@ -474,7 +489,6 @@ export class Tab1Page implements OnInit {
         });
       }
     }
-   
   }
 
   getRecDet(deviceValue: any) {
@@ -495,9 +509,11 @@ export class Tab1Page implements OnInit {
     );
   }
   ps(data) {
-    this.totalValue = this.totalValue + data.publicvalue;
-    this.arraySelect.push(data);
-    console.log(this.arraySelect);
+    if (data) {
+      this.totalValue = this.totalValue + data.publicvalue;
+      this.arraySelect.push(data);
+      console.log(this.arraySelect);
+    }
   }
 
   removeItemFromArr(item) {
@@ -558,8 +574,6 @@ export class Tab1Page implements OnInit {
     }
   }
 
-  
-
   async addCodeManula() {
     //       let formValue = this._formEntity.value;
     if (this.formData.controls.codebar.value) {
@@ -590,21 +604,21 @@ export class Tab1Page implements OnInit {
             console.log(err);
           }
         );*/
-        let codeDuplicate = false;
-        this.scannedData.forEach((element) => {
-          if (element === this.formData.controls.codebar.value) {
-            codeDuplicate = true;
-          }
-        });
-        if (!codeDuplicate) {
-          this.scannedData.push(this.formData.controls.codebar.value);
-          this.verifyCodeRange();
-        } else {
-          this.presentAlert(
-            "Alerta",
-            "El codigo que intenta registra ya fue añadido!"
-          );
+      let codeDuplicate = false;
+      this.scannedData.forEach((element) => {
+        if (element === this.formData.controls.codebar.value) {
+          codeDuplicate = true;
         }
+      });
+      if (!codeDuplicate) {
+        this.scannedData.push(this.formData.controls.codebar.value);
+        this.verifyCodeRange();
+      } else {
+        this.presentAlert(
+          "Alerta",
+          "El codigo que intenta registra ya fue añadido!"
+        );
+      }
     } else {
       this.presentAlert("Alerta", "Digite un codigo de barra!");
       console.log("Code", this.formData.controls.codebar.value);
@@ -711,10 +725,9 @@ export class Tab1Page implements OnInit {
             rango2 = parseInt(data.name2);
             if (rango1 < rango2) {
               for (let index = rango1; index <= rango2; index++) {
-                
                 this.addCodeRonge(index);
               }
-              console.log('Fin add rango');
+              console.log("Fin add rango");
               this.verifyCodeRange();
             }
           },
@@ -722,41 +735,41 @@ export class Tab1Page implements OnInit {
       ],
     });
     await alert.present();
-    console.log('Fin add present');
+    console.log("Fin add present");
   }
 
-  verifyCodeRange(){
-     
-    this.scannedData.forEach(element => {
-      console.log('code',element);
+  verifyCodeRange() {
+    this.scannedData.forEach((element) => {
+      console.log("code", element);
       this._FirebaseServiceService
-      .getByCodebar("sales", "" + element)
-      .subscribe(
-        (data) => {
-          let info = data.map((e) => {
-            console.log(e.payload.doc.data());
-            // this.datas(e.payload.doc.data());
-            let info22 = {
-              id: e.payload.doc.id,
-              ...e.payload.doc.data(),
-            } as any;
-            if (info22) {
-               console.log('info2, quitar cod', element);
-               let i = this.scannedData.indexOf( element );
-               this.scannedData.splice( i, 1 );
-               this.presentToast('El código: ' + element + ' y sera omitido en el generar consecutivo!');
-            } else {
-              console.log('Cod no registra');
-
-            }
-          });
-        },
-        err =>{
-          console.log(err);
-          
-        }
-      )
-      
+        .getByCodebar("sales", "" + element)
+        .subscribe(
+          (data) => {
+            let info = data.map((e) => {
+              console.log(e.payload.doc.data());
+              // this.datas(e.payload.doc.data());
+              let info22 = {
+                id: e.payload.doc.id,
+                ...e.payload.doc.data(),
+              } as any;
+              if (info22) {
+                console.log("info2, quitar cod", element);
+                let i = this.scannedData.indexOf(element);
+                this.scannedData.splice(i, 1);
+                this.presentToast(
+                  "El código: " +
+                    element +
+                    " y sera omitido en el generar consecutivo!"
+                );
+              } else {
+                console.log("Cod no registra");
+              }
+            });
+          },
+          (err) => {
+            console.log(err);
+          }
+        );
     });
   }
   async presentAlertRadio() {
@@ -844,7 +857,7 @@ export class Tab1Page implements OnInit {
   async presentToast(msj) {
     const toast = await this.toastController.create({
       message: msj,
-      duration: 5000
+      duration: 5000,
     });
     toast.present();
   }
@@ -867,7 +880,7 @@ export class Tab1Page implements OnInit {
   // Busqueda de servicio por codigo
   async presentAlertFindCode() {
     let find = false;
-     const alert = await this.alertController.create({
+    const alert = await this.alertController.create({
       cssClass: "my-custom-class",
       header: "Indique un código!",
       inputs: [
@@ -876,9 +889,8 @@ export class Tab1Page implements OnInit {
           type: "number",
           placeholder: "210",
           min: -0,
-          max:999
+          max: 999,
         },
-        
       ],
       buttons: [
         {
@@ -894,27 +906,29 @@ export class Tab1Page implements OnInit {
           handler: (data) => {
             console.log("Confirm Okay", data.name1);
             // Buscar servicio individual por cod
-            this.services.forEach(element => {
-              if(element.code === data.name1){
+            this.services.forEach((element) => {
+              if (element.code === data.name1) {
                 this.addValueToArraySelect(element.id);
                 find = true;
               }
-              
             });
-            if(!find){
-              this.presentAlert('Alerta', 'No se encontraro resultado para el código: ' + data.name1);
-            } 
+            if (!find) {
+              this.presentAlert(
+                "Alerta",
+                "No se encontraro resultado para el código: " + data.name1
+              );
+            }
           },
         },
       ],
     });
     await alert.present();
-    console.log('Fin add present');
+    console.log("Fin add present");
   }
   // Busqueda de PLAN por codigo
   async presentAlertFindCodePLan() {
     let find = false;
-     const alert = await this.alertController.create({
+    const alert = await this.alertController.create({
       cssClass: "my-custom-class",
       header: "Indique un código!",
       inputs: [
@@ -923,9 +937,8 @@ export class Tab1Page implements OnInit {
           type: "number",
           placeholder: "810",
           min: -0,
-          max:999
+          max: 999,
         },
-        
       ],
       buttons: [
         {
@@ -941,21 +954,23 @@ export class Tab1Page implements OnInit {
           handler: (data) => {
             console.log("Confirm Okay", data.name1);
             // Buscar servicio individual por cod
-            this.data.forEach(element => {
-              if(element.code === data.name1){
+            this.data.forEach((element) => {
+              if (element.code === data.name1) {
                 this.addValueToArraySelectPlan(element.id);
-                 find = true;
+                find = true;
               }
-              
             });
-            if(!find){
-              this.presentAlert('Alerta', 'No se encontraro resultado para el código: ' + data.name1);
-            } 
+            if (!find) {
+              this.presentAlert(
+                "Alerta",
+                "No se encontraro resultado para el código: " + data.name1
+              );
+            }
           },
         },
       ],
     });
     await alert.present();
-    console.log('Fin add present');
+    console.log("Fin add present");
   }
 }

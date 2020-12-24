@@ -54,10 +54,11 @@
       <span>Numero de manillas mostradas: {{ datat.length }}</span>
     </ion-row>
   </ion-grid>
+  <h3 (click)="ordenar()">ordenar</h3>
   <ion-card *ngFor="let item of datat">
     <ion-card-header>
       <ion-card-subtitle
-        ><strong>Codigo de barra</strong> # {{item.codebar}}<br />
+        ><strong >Codigo de barra</strong> # {{item.codebar}}<br />
         <strong>Fecha</strong> {{item.date | date }} - {{item.hour }}
       </ion-card-subtitle>
       <ion-card-title>Venta de servicio</ion-card-title>

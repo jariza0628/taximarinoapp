@@ -81,6 +81,9 @@ export class Tab2Page implements OnInit {
       });
 
     console.log("data getSalesByDateAndSeller", this.data);
+    setTimeout(() => {
+      this.ordenar();  
+    }, 1300);
   }
 
   getSalesByUser(userName) {
@@ -145,5 +148,16 @@ export class Tab2Page implements OnInit {
       return "0" + n;
     }
     return n;
+  }
+  ordenar() {
+    let arraytemp: any[];
+    arraytemp = [];
+    console.log(
+      this.datat.sort((a, b) => parseInt(a.codebar) - parseInt(b.codebar))
+    );
+    for (let i=this.datat.length - 1; i >= 0; i--) {
+       arraytemp.push(this.datat[i]);
+    }
+    this.datat = arraytemp;
   }
 }
