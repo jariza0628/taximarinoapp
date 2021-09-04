@@ -1,19 +1,12 @@
 <ion-content class="ion-no-padding">
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
-    <ion-refresher-content
-      pullingIcon="chevron-down-circle-outline"
-      pullingText="Pull to refresh"
-      refreshingSpinner="circles"
-      refreshingText="Actualizando..."
-    >
+    <ion-refresher-content pullingIcon="chevron-down-circle-outline" pullingText="Pull to refresh"
+      refreshingSpinner="circles" refreshingText="Actualizando...">
     </ion-refresher-content>
   </ion-refresher>
   <ion-grid>
     <ion-row>
-      <ion-col
-        size="12"
-        style="text-align: center; font-family: Arial, Helvetica, sans-serif"
-      >
+      <ion-col size="12" style="text-align: center; font-family: Arial, Helvetica, sans-serif">
         <h3>Generar Venta</h3>
       </ion-col>
     </ion-row>
@@ -37,19 +30,11 @@
       </ion-item>
       <ion-item>
         <ion-label position="floating">Ciudad de Procedencia</ion-label>
-        <ion-input
-          type="text"
-          formControlName="citylife"
-          name="citylife"
-        ></ion-input>
+        <ion-input type="text" formControlName="citylife" name="citylife"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label position="floating">Telefono</ion-label>
-        <ion-input
-          type="number"
-          formControlName="phone"
-          name="phone"
-        ></ion-input>
+        <ion-input type="number" formControlName="phone" name="phone"></ion-input>
       </ion-item>
       <ion-item-divider>
         <ion-label> Vendedor y Zona de venta </ion-label>
@@ -59,23 +44,13 @@
           <ion-col size="6">
             <ion-item>
               <ion-label position="floating">Vendedor</ion-label>
-              <ion-input
-                style="pointer-events: none"
-                type="text"
-                formControlName="seller"
-                name="seller"
-              ></ion-input>
+              <ion-input style="pointer-events: none" type="text" formControlName="seller" name="seller"></ion-input>
             </ion-item>
           </ion-col>
           <ion-col size="6">
             <ion-item>
               <ion-label position="floating">Zona</ion-label>
-              <ion-input
-                style="pointer-events: none"
-                type="text"
-                formControlName="zone"
-                name="zone"
-              ></ion-input>
+              <ion-input style="pointer-events: none" type="text" formControlName="zone" name="zone"></ion-input>
             </ion-item>
           </ion-col>
         </ion-row>
@@ -83,23 +58,15 @@
           <ion-col size="5">
             <ion-item>
               <ion-label position="floating">Vaucher</ion-label>
-              <ion-input
-                type="text"
-                formControlName="vaucher"
-                name="vaucher"
-              ></ion-input>
+              <ion-input type="text" formControlName="vaucher" name="vaucher"></ion-input>
             </ion-item>
           </ion-col>
           <ion-col size="7">
             <ion-item>
               <ion-label>Comisionista</ion-label>
-              <ion-select
-                placeholder="Seleccionar"
-                formControlName="comsions"
-               >
-                <ion-select-option *ngFor="let item of comsions" value="{{item.id}}"
-                  >{{item.name | titlecase}}</ion-select-option
-                >
+              <ion-select placeholder="Seleccionar" formControlName="comsions">
+                <ion-select-option *ngFor="let item of comsions" value="{{item.id}}">{{item.name | titlecase}}
+                </ion-select-option>
               </ion-select>
             </ion-item>
           </ion-col>
@@ -109,20 +76,15 @@
       <ion-item-divider>
         <ion-label> Servicios a vender </ion-label>
       </ion-item-divider>
-       <!-- PLANES -->
-       <ion-grid >
+      <!-- PLANES -->
+      <ion-grid>
         <ion-row>
           <ion-col size="9">
             <ion-item>
               <ion-label>Combo o plan</ion-label>
-              <ion-select
-                placeholder="Seleccionar"
-                formControlName="detail"
-                (ionChange)="onChangePlan($event)"
-              >
-                <ion-select-option *ngFor="let item of data" value="{{item.id}}"
-                  >{{item.name | titlecase}}</ion-select-option
-                >
+              <ion-select placeholder="Seleccionar" formControlName="detail" (ionChange)="onChangePlan($event)">
+                <ion-select-option *ngFor="let item of data" value="{{item.id}}">{{item.name | titlecase}}
+                </ion-select-option>
               </ion-select>
             </ion-item>
           </ion-col>
@@ -132,7 +94,7 @@
           </ion-col>
         </ion-row>
       </ion-grid>
-    
+
       <!-- ************************ -->
       <ng-container *ngIf="arraySelectPlan && arraySelectPlan.length > 0">
         <ion-card>
@@ -144,7 +106,7 @@
           <ion-card-content>
             <ion-grid>
               <ion-row *ngFor="let item of arraySelectPlan">
-               
+
                 <ion-col size="8" style="text-align: left">
                   <ion-label>{{item.name | titlecase}}</ion-label>
                 </ion-col>
@@ -152,12 +114,8 @@
                   <ion-label>${{item.totalvalue}}</ion-label>
                 </ion-col>
                 <ion-col size="1">
-                  <img
-                    (click)="removeItemFromArrPlan(item)"
-                    src="https://img.icons8.com/plasticine/2x/delete-sign.png"
-                    width="15"
-                    height="20"
-                  />
+                  <img (click)="removeItemFromArrPlan(item)" src="https://img.icons8.com/plasticine/2x/delete-sign.png"
+                    width="15" height="20" />
                 </ion-col>
               </ion-row>
             </ion-grid>
@@ -165,19 +123,14 @@
         </ion-card>
       </ng-container>
       <!-- SERVICIO INDIVIDUAL -->
-      <ion-grid >
+      <ion-grid>
         <ion-row>
           <ion-col size="9">
             <ion-item>
               <ion-label>Servicios individuales</ion-label>
-              <ion-select
-                placeholder="Seleccionar"
-                formControlName="service"
-                (ionChange)="onChange($event)"
-              >
-                <ion-select-option *ngFor="let item of services" value="{{item.id}}"
-                  >{{item.name | titlecase}}</ion-select-option
-                >
+              <ion-select placeholder="Seleccionar" formControlName="service" (ionChange)="onChange($event)">
+                <ion-select-option *ngFor="let item of services" value="{{item.id}}">{{item.name | titlecase}}
+                </ion-select-option>
               </ion-select>
             </ion-item>
           </ion-col>
@@ -190,27 +143,17 @@
       <!-- AGENCIA -->
       <ion-item>
         <ion-label>Seleccionar Agencia</ion-label>
-        <ion-select
-          placeholder="Seleccionar"
-          formControlName="agency"
-          (ionChange)="onChangeAgency($event)"
-        >
-        <ion-select-option   value="0"
-        >Seleccionar</ion-select-option>
-          <ion-select-option *ngFor="let item of agency" value="{{item.name}}"
-            >{{item.name | titlecase}}</ion-select-option
-          >
+        <ion-select placeholder="Seleccionar" formControlName="agency" (ionChange)="onChangeAgency($event)">
+          <ion-select-option value="0">Seleccionar</ion-select-option>
+          <ion-select-option *ngFor="let item of agency" value="{{item.name}}">{{item.name | titlecase}}
+          </ion-select-option>
         </ion-select>
       </ion-item>
       <ion-item>
         <ion-label>Medio de Pago</ion-label>
 
-        <ion-select
-          #typePay
-          placeholder="Seleccionar"
-          (ionChange)="onChangePayMethod($event)"
-          formControlName="typepay"
-        >
+        <ion-select #typePay placeholder="Seleccionar" (ionChange)="onChangePayMethod($event)"
+          formControlName="typepay">
           <ion-select-option value="cash" selected>Efectivo</ion-select-option>
           <ion-select-option value="card">Tarjeta</ion-select-option>
           <ion-select-option value="credit">Credito</ion-select-option>
@@ -223,23 +166,13 @@
             <ion-col size="6">
               <ion-item>
                 <ion-label position="floating">Efectivo</ion-label>
-                <ion-input
-                  type="number"
-                  formControlName="efecty"
-                  name="efecty"
-                  placeholder="0"
-                ></ion-input>
+                <ion-input type="number" formControlName="efecty" name="efecty" placeholder="0"></ion-input>
               </ion-item>
             </ion-col>
             <ion-col size="6">
               <ion-item>
                 <ion-label position="floating">Tarjeta</ion-label>
-                <ion-input
-                  type="number"
-                  formControlName="tarjeta"
-                  name="tarjeta"
-                  placeholder="0"
-                ></ion-input>
+                <ion-input type="number" formControlName="tarjeta" name="tarjeta" placeholder="0"></ion-input>
               </ion-item>
             </ion-col>
           </ion-row>
@@ -258,7 +191,7 @@
               <ion-row *ngFor="let item of arraySelect; let i = index">
                 <ion-col size="2" style="text-align: left">
                   <input type="checkbox" [(ngModel)]="item.comissionVal" [ngModelOptions]="{standalone: true}">
-                 </ion-col>
+                </ion-col>
                 <ion-col size="6" style="text-align: left">
                   <ion-label>{{item.name | titlecase}}</ion-label>
                 </ion-col>
@@ -266,12 +199,8 @@
                   <ion-label>${{item.publicvalue}}</ion-label>
                 </ion-col>
                 <ion-col size="1">
-                  <img
-                    (click)="removeItemFromArr(item)"
-                    src="https://img.icons8.com/plasticine/2x/delete-sign.png"
-                    width="20"
-                    height="20"
-                  />
+                  <img (click)="removeItemFromArr(item)" src="https://img.icons8.com/plasticine/2x/delete-sign.png"
+                    width="20" height="20" />
                 </ion-col>
               </ion-row>
             </ion-grid>
@@ -295,12 +224,7 @@
         <ion-row>
           <ion-item>
             <ion-label position="stacked">Comisión:</ion-label>
-            <ion-input
-              placeholder="2000"
-              type="number"
-              formControlName="commission"
-              name="commission"
-            ></ion-input>
+            <ion-input placeholder="2000" type="number" formControlName="commission" name="commission"></ion-input>
           </ion-item>
         </ion-row>
       </ion-grid>
@@ -312,32 +236,18 @@
           <ion-col size="8">
             <ion-item>
               <ion-label position="stacked">Escanear codigo:</ion-label>
-              <ion-input
-                placeholder="0000000000"
-                type="number"
-                formControlName="codebar"
-                name="codebar"
-              ></ion-input>
+              <ion-input placeholder="0000000000" type="number" formControlName="codebar" name="codebar"></ion-input>
             </ion-item>
           </ion-col>
           <ion-col size="4" style="padding-top: 19px">
-            <ion-button color="danger" (click)="addCodeManula()"
-              >Añadir</ion-button
-            >
+            <ion-button color="danger" (click)="addCodeManula()">Añadir</ion-button>
           </ion-col>
           <ion-col>
-            <ion-button color="warning" (click)="scanCode()"
-              ><img
-                width="22"
-                height="22"
+            <ion-button color="warning" (click)="scanCode()"><img width="22" height="22"
                 src="https://images.vexels.com/media/users/3/157862/isolated/preview/5fc76d9e8d748db3089a489cdd492d4b-barcode-scanning-icon-by-vexels.png"
-                alt=""
-              />
-              - SCAN</ion-button
-            >
-            <ion-button color="danger" (click)="addRangeCodes()"
-              >Generar Consecutivos</ion-button
-            >
+                alt="" />
+              - SCAN</ion-button>
+            <ion-button color="danger" (click)="addRangeCodes()">Generar Consecutivos</ion-button>
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -347,34 +257,33 @@
         <p>Numero de Codigos añadidos: {{ scannedData.length }}</p>
         <div class="codebox">
           <p *ngFor="let item of scannedData">
-            <img
-              width="22"
-              height="22"
+            <img width="22" height="22"
               src="https://images.vexels.com/media/users/3/157862/isolated/preview/5fc76d9e8d748db3089a489cdd492d4b-barcode-scanning-icon-by-vexels.png"
-              alt=""
-            />
+              alt="" />
             &nbsp; {{ item }}
-            <img
-              (click)="removeItemFromArrCodeBar(item)"
-              src="https://img.icons8.com/plasticine/2x/delete-sign.png"
-              width="20"
-              height="20"
-              style="float: right"
-            />
+            <img (click)="removeItemFromArrCodeBar(item)" src="https://img.icons8.com/plasticine/2x/delete-sign.png"
+              width="20" height="20" style="float: right" />
           </p>
         </div>
       </ng-container>
       <br />
+
+      <ng-template #loading>
+        <ion-button color="dark" [disabled]="!formData.valid" type="submit">Guardar</ion-button>
+
+      </ng-template>
+      <div *ngIf="closeData.length > 0; else loading">
+        <p>Posee cierres generados hoy no puedes guardar ventas.</p>
+        <ion-button color="dark" [disabled]="true" type="submit">Guardar</ion-button>
+      </div>
       <ion-button color="primary" (click)="resetForm()">Limpiar</ion-button>
-      <ion-button color="dark" [disabled]="!formData.valid" type="submit"
-        >Guardar</ion-button
-      >
+
+
+
       <ion-item>
-        <ion-label *ngIf="scannedData.length > 0"
-          >Total: {{(totalValue + total) * scannedData.length }}
+        <ion-label *ngIf="scannedData.length > 0">Total: {{(totalValue + total) * scannedData.length }}
         </ion-label>
-        <ion-label *ngIf="scannedData.length === 0"
-          >Total: {{(totalValue + total) }}
+        <ion-label *ngIf="scannedData.length === 0">Total: {{(totalValue + total) }}
         </ion-label>
       </ion-item>
     </ion-list>

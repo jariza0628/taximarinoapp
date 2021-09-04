@@ -23,12 +23,25 @@
 
     </ion-card-content>
   </ion-card>
-
   <ion-grid>
     <ion-col>
       <ion-button color="danger" (click)="colse()">Cerra sesión</ion-button>
 
     </ion-col>
+  </ion-grid>
+  <ion-grid>
+    <!-- Default Segment -->
+    <ion-segment (ionChange)="segmentChanged($event)">
+      <ion-segment-button value="Cierres">
+        <ion-label>Cierres</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="Planes">
+        <ion-label>Planes</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-grid>
+  <ion-grid *ngIf="tabSelected == 'Planes'">
+
 
     <ion-col>
       <p>Planes Disponibles</p>
@@ -41,17 +54,44 @@
         Costo
       </ion-col>
     </ion-row>
-    <ion-row *ngFor="let item of data">
-      <ion-col size="8">
-        {{ item.name }}
+    <ng-container *ngIf="data.length > 0">
+      <ion-row *ngFor="let item of data">
+        <ion-col size="8">
+          {{ item.name }}
+        </ion-col>
+        <ion-col size="4">
+          {{ item.totalvalue }}
+        </ion-col>
+      </ion-row>
+    </ng-container>
+
+  </ion-grid>
+  <ion-grid *ngIf="tabSelected == 'Cierres'">
+    <ion-col size="12">
+      <ion-button color="success" (click)="presentModal()">Generar Cierre</ion-button>
+    </ion-col>
+    <ion-col>
+      <p>Cierres Registrado</p>
+    </ion-col>
+    <ion-row class="header">
+      <ion-col size="7">
+        Cierre Fecha
       </ion-col>
-      <ion-col size="4">
-        {{ item.totalvalue }}
+      <ion-col size="5">
+        Valor entrega
       </ion-col>
     </ion-row>
+    <ng-container *ngIf="datatClose.length > 0 && tabSelected == 'Cierres'">
+      <ion-row *ngFor="let item of datatClose">
+        <ion-col size="7">
+          {{ item.date }}
+        </ion-col>
+        <ion-col size="5">
+          {{ item.totalDelivery }}
+        </ion-col>
+      </ion-row>
+    </ng-container>
   </ion-grid>
-
-
 
 
 </ion-content>

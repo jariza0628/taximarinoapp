@@ -42,4 +42,8 @@ export class FirebaseServiceService {
   getSeller() {
     return this.firestore.collection('users', ref => ref.where('type', '==', 'Vendedor')).snapshotChanges();
   }
+  //CIerres
+  getCloseBydateAndUser(entiti, data, data2) {
+    return this.firestore.collection(entiti, ref => ref.where('user', '==', data).where('date', '==', data2)).snapshotChanges();
+  }
 }

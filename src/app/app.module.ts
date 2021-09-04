@@ -19,12 +19,13 @@ import { HomePipe } from './home.pipe';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FirebaseServiceService } from './services/firebase-service.service';
+import { ModalClosePage } from './modal-close/modal-close.page';
 
 
 
 @NgModule({
-  declarations: [AppComponent, HomePipe],
-  entryComponents: [],
+  declarations: [AppComponent, HomePipe, ModalClosePage],
+  entryComponents: [ModalClosePage],
   imports: [
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFirestoreModule,

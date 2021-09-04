@@ -9,6 +9,7 @@ import { BarcodeScanner } from "@ionic-native/barcode-scanner/ngx";
 import { async } from "rxjs/internal/scheduler/async";
 import { v4 as uuidv4 } from "uuid";
 import { ToastController } from "@ionic/angular";
+import { Close } from "../models/close.model";
 
 @Component({
   selector: "app-tab1",
@@ -18,12 +19,16 @@ import { ToastController } from "@ionic/angular";
 export class Tab1Page implements OnInit {
   formData: FormGroup;
   data: Plan[];
+  closeData: any;
   services: Service[];
   pointsale: any;
   total: any;
   arraySelect: Service[];
   arraySelectPlan: Plan[];
   public totalValue: number;
+
+  dateString: any;
+  hours: any;
 
   comsions: any;
 
@@ -54,7 +59,7 @@ export class Tab1Page implements OnInit {
     this.codeRangesRegister = [];
     this.arraySelect = [];
     this.arraySelectPlan = [];
-
+    this.closeData = [];
     this.scannedData = [];
     this.currentUser = JSON.parse(sessionStorage.getItem("user"));
     this.formData = fb.group({
@@ -91,6 +96,7 @@ export class Tab1Page implements OnInit {
     this.getDataServices();
     this.getDataZones();
     this.getAgency();
+    this.getClose();
     this.getComision();
     setTimeout(() => {
       this.loadDataUser();
@@ -196,7 +202,7 @@ export class Tab1Page implements OnInit {
     this._FirebaseServiceService.getfirebase("agency").subscribe((data) => {
       // console.log('dara', data);
       this.agency = data.map((e) => {
-        console.log(e.payload.doc.data());
+      // //   console.log(e.payload.doc.data());
         return {
           id: e.payload.doc.id,
           ...e.payload.doc.data(),
@@ -416,7 +422,7 @@ export class Tab1Page implements OnInit {
     this._FirebaseServiceService.getfirebase("plan").subscribe((data) => {
       // console.log('dara', data);
       this.data = data.map((e) => {
-        console.log(e.payload.doc.data());
+      // //   console.log(e.payload.doc.data());
         return {
           id: e.payload.doc.id,
           ...e.payload.doc.data(),
@@ -429,7 +435,7 @@ export class Tab1Page implements OnInit {
     this._FirebaseServiceService.getfirebase("service").subscribe((data) => {
       // console.log('dara', data);
       this.services = data.map((e) => {
-        console.log(e.payload.doc.data());
+      //   console.log(e.payload.doc.data());
         return {
           id: e.payload.doc.id,
           ...e.payload.doc.data(),
@@ -585,7 +591,7 @@ export class Tab1Page implements OnInit {
             console.log("data", data);
 
             let info = data.map((e) => {
-              console.log(e.payload.doc.data());
+            //   console.log(e.payload.doc.data());
               // this.datas(e.payload.doc.data());
               let info2 = {
                 id: e.payload.doc.id,
@@ -746,7 +752,7 @@ export class Tab1Page implements OnInit {
         .subscribe(
           (data) => {
             let info = data.map((e) => {
-              console.log(e.payload.doc.data());
+            //   console.log(e.payload.doc.data());
               // this.datas(e.payload.doc.data());
               let info22 = {
                 id: e.payload.doc.id,
@@ -973,4 +979,47 @@ export class Tab1Page implements OnInit {
     await alert.present();
     console.log("Fin add present");
   }
+  /** 
+   * Get cierre paa habilitar guardado
+   */
+  getClose(){
+    this.getdate();
+    this._FirebaseServiceService.getCloseBydateAndUser("close", this.currentUser.user, this.dateString).subscribe((data) => {
+      // console.log('dara', data);
+      this.closeData = data.map((e) => {
+      //   console.log(e.payload.doc.data());
+       this.psClose(e.payload.doc.data());
+        return {
+          id: e.payload.doc.id,
+          ...e.payload.doc.data(),
+        } as Close;
+      });
+    });
+    
+  }
+  getdate(){
+    let dates = new Date();
+         
+          this.dateString =
+            dates.getFullYear() +
+            "-" +
+            this.appendLeadingZeroes(dates.getMonth() + 1) +
+            "-" +
+            this.appendLeadingZeroes(dates.getDate());
+          this.hours =
+            dates.getHours() +
+            ":" +
+            dates.getMinutes() +
+            ":" +
+            dates.getSeconds();
+  }
+
+  psClose(data) {
+    if (data) {
+      this.closeData = data
+      console.log('psClose',data);
+      length
+    }
+  }
+   
 }

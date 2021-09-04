@@ -10,4 +10,5 @@ export class User {
     onesignal?: string;
     pintsale: any;
     zone: any;
+    status: any;
 }

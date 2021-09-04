@@ -9,7 +9,7 @@
         <ion-select placeholder="Select One" [(ngModel)]="user">
           <ng-container *ngFor="let item of data">
             <ion-select-option
-              *ngIf="item.type === 'Vendedor'"
+              *ngIf="item.type === 'Vendedor' && item.status === 'Activo'"
               value="{{item.user}}"
               >{{item.user}}</ion-select-option
             >

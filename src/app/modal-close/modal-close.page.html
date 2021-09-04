@@ -1,0 +1,82 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Nuevo cierre</ion-title>
+    <label slot="end" (click)="closemodal()">Cerrar</label>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="formData" (ngSubmit)="sendClose()">
+    <ion-grid>
+      <ion-col>
+        <ion-item>
+          <ion-label position="floating">Usuaio</ion-label>
+          <ion-input type="text" formControlName="user" name="user" disabled></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col [size]="6">
+        <ion-item>
+          <ion-label position="floating">Efectivo</ion-label>
+          <ion-input type="number" formControlName="efecty" name="efecty" ></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col [size]="6">
+        <ion-item>
+          <ion-label position="floating">Datafono</ion-label>
+          <ion-input type="number" formControlName="dataphone" name="dataphone" ></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col>
+        <ion-item>
+          <ion-label position="floating">Vaucher Agencia</ion-label>
+          <ion-input type="number" formControlName="vaucherAgency" name="vaucherAgency" ></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col>
+        <ion-item>
+          <ion-label position="floating">Venta general</ion-label>
+          <ion-input type="number" formControlName="buyGeneral" name="buyGeneral" ></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col>
+        <ion-item>
+          <ion-label position="floating">Total comision</ion-label>
+          <ion-input type="number" formControlName="totalComisions" name="totalComisions" ></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col>
+        <ion-item>
+          <ion-label position="floating">Total Promocion</ion-label>
+          <ion-input type="number" formControlName="totalPromo" name="totalPromo" ></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col>
+        <ion-item>
+          <ion-label position="floating">Total Devoluciones</ion-label>
+          <ion-input type="number" formControlName="totalReturn" name="totalReturn" ></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col>
+        <ion-item>
+          <ion-label position="floating">Total entrega</ion-label>
+          <ion-input type="number" formControlName="totalDelivery" name="totalDelivery" ></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col>
+        <ion-item>
+          <ion-label position="floating"># Manillas vendidas</ion-label>
+          <ion-input type="number" formControlName="handlesBuy" name="handlesBuy" ></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col>
+        <ion-item>
+          <ion-label position="floating"># Manillas que le quedan</ion-label>
+          <ion-input type="number" formControlName="handles" name="handles" ></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-grid>
+    <ion-button color="warning" [disabled]="!formData.valid" (click)="save()">Guardar</ion-button>
+
+  </form>
+</ion-content>
